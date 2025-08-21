@@ -1,0 +1,119 @@
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 20px;
+  background-color: #f5f5f5;
+}
+
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.section {
+  margin-bottom: 24px;
+  padding: 16px;
+  background-color: #f9f9f9;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+}
+
+.section h2 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 18px;
+  color: #555;
+}
+
+.shortcut-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  background: white;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.shortcut-desc {
+  flex: 1;
+}
+
+.shortcut-desc h3 {
+  margin: 0 0 4px 0;
+  font-size: 14px;
+  color: #333;
+}
+
+.shortcut-desc p {
+  margin: 0;
+  font-size: 12px;
+  color: #666;
+}
+
+.shortcut-key {
+  background-color: #f0f0f0;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 14px;
+  margin-right: 8px;
+}
+
+.customize-btn {
+  padding: 6px 12px;
+  background-color: #4285f4;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.customize-btn:hover {
+  background-color: #3367d6;
+}
+
+.info-box {
+  background-color: #e3f2fd;
+  border-left: 4px solid #2196f3;
+  padding: 12px;
+  margin-top: 16px;
+  border-radius: 0 4px 4px 0;
+}
+
+.info-box p {
+  margin: 0;
+  font-size: 13px;
+  color: #1976d2;
+}
+
+.current-domain {
+  background-color: #e8f5e8;
+  border-left: 4px solid #4caf50;
+  padding: 12px;
+  margin-bottom: 16px;
+  border-radius: 0 4px 4px 0;
+}
+
+.current-domain h3 {
+  margin: 0 0 4px 0;
+  color: #2e7d2e;
+  font-size: 14px;
+}
+
+.current-domain p {
+  margin: 0;
+  font-size: 12px;
+  color: #4caf50;
+}

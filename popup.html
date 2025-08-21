@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="css/popup.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h2>Element Blocker</h2>
+        <button id="settingsBtn" class="settings-btn" title="打开设置页面">⚙️</button>
+      </div>
+
+      <div class="section">
+        <div class="help-container">
+          <h3>添加要屏蔽的类名</h3>
+          <div class="help-tooltip">
+            <p class="help-text">支持包含匹配和组合匹配：</p>
+            <p class="help-text">• 单个类名：如 "ad" 将匹配包含 "ad" 的所有类名</p>
+            <p class="help-text">• 多个类名：如 "class1 class2" 将匹配同时包含这两个类的元素</p>
+          </div>
+        </div>
+        <div class="input-group">
+          <input type="text" id="classInput" placeholder="输入类名片段 (例如: ad, banner)" />
+          <button id="addBtn">+</button>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>已屏蔽的类名</h3>
+        <p class="help-text">点击类名切换启用状态，• 表示已启用，○ 表示已禁用</p>
+        <div id="blockedList" class="blocked-list"></div>
+      </div>
+
+      <div class="section">
+        <div class="button-group">
+          <button id="toggleBtn" class="toggle-btn">启用屏蔽</button>
+          <button id="clearBtn" class="clear-btn">清除所有</button>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>快捷操作</h3>
+        <button id="inspectBtn" class="inspect-btn">选择元素</button>
+        <p class="help-text">点击后在页面上点击要屏蔽的元素</p>
+        <div class="shortcut-info">
+          <p class="help-text"><strong>快捷键:</strong> Cmd+E (Mac) / Ctrl+E (Windows/Linux)</p>
+          <p class="help-text">快速切换当前域名下所有屏蔽项的状态</p>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/popup.js"></script>
+  </body>
+</html>

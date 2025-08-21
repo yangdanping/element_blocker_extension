@@ -1,0 +1,431 @@
+body {
+  width: 300px;
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f5f5f5;
+}
+
+.container {
+  padding: 16px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+h2 {
+  margin: 0;
+  color: #333;
+  font-size: 20px;
+  flex: 1;
+  text-align: center;
+}
+
+.settings-btn {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.settings-btn:hover {
+  background-color: #f0f0f0;
+}
+
+h3 {
+  margin: 0 0 8px 0;
+  color: #555;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.section {
+  margin-bottom: 16px;
+  background: white;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+
+.input-group {
+  display: flex;
+  gap: 8px;
+}
+
+#classInput {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+#classInput::placeholder {
+  font-size: 11px;
+}
+
+#classInput:focus {
+  outline: none;
+  border-color: #4285f4;
+}
+
+#addBtn {
+  padding: 8px 16px;
+  background-color: #4285f4;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+#addBtn:hover {
+  background-color: #3367d6;
+}
+
+.blocked-list {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.blocked-item {
+  display: flex;
+  align-items: center;
+  padding: 6px 8px;
+  margin: 4px 0;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 32px;
+}
+
+.blocked-item:hover {
+  background-color: #e9ecef;
+  transform: translateY(-1px);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.blocked-item.enabled {
+  background-color: #e8f5e8;
+  border: 1px solid #d4edda;
+}
+
+.blocked-item.enabled:hover {
+  background-color: #d1ecf1;
+}
+
+.blocked-item.disabled {
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  opacity: 0.7;
+}
+
+.blocked-item.disabled:hover {
+  background-color: #e9ecef;
+}
+
+.blocked-item.disabled .class-name {
+  color: #6c757d;
+  text-decoration: line-through;
+}
+
+.class-name {
+  font-family: monospace;
+  color: #333;
+  font-weight: 500;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.status-indicator {
+  margin: 0 8px;
+  font-size: 14px;
+  cursor: pointer;
+  user-select: none;
+  flex-shrink: 0;
+  width: 16px;
+  text-align: center;
+}
+
+.blocked-item.enabled .status-indicator {
+  color: #66b279;
+}
+
+.blocked-item.disabled .status-indicator {
+  color: #6c757d;
+}
+
+.remove-btn {
+  background: none;
+  border: none;
+  color: #dc3545;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 2px;
+  line-height: 1;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.remove-btn:hover {
+  color: #c82333;
+}
+
+.button-group {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+.toggle-btn {
+  flex: 1;
+  padding: 10px 8px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.toggle-btn.enabled {
+  border: 1px solid #66b279;
+  background-color: #fff;
+  color: #66b279;
+}
+
+.toggle-btn.enabled:hover {
+  background-color: #218838;
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.toggle-btn.disabled {
+  background-color: #6c757d;
+  color: white;
+}
+
+.toggle-btn.disabled:hover {
+  background-color: #5a6268;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.clear-btn {
+  flex: 1;
+  padding: 10px 8px;
+  border: 1px solid #dc3545;
+  background-color: #fff;
+  color: #dc3545;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.clear-btn:hover {
+  background-color: #c82333;
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.inspect-btn {
+  width: 100%;
+  padding: 10px;
+  background-color: #17a2b8;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.inspect-btn:hover {
+  background-color: #138496;
+}
+
+.help-text {
+  margin: 0 0 8px 0;
+  font-size: 11px;
+  color: #666;
+  line-height: 1.4;
+}
+
+.section .help-text {
+  text-align: left;
+  margin-bottom: 12px;
+}
+
+.section:last-child .help-text {
+  text-align: center;
+  margin-top: 8px;
+  margin-bottom: 0;
+}
+
+.empty-list {
+  text-align: center;
+  color: #999;
+  font-size: 13px;
+  padding: 16px 0;
+}
+
+/* 域名分组样式 */
+.domain-group {
+  margin-bottom: 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.domain-group.active-domain {
+  border-color: #4285f4;
+  background-color: #f8f9ff;
+}
+
+.domain-group.inactive-domain {
+  opacity: 0.7;
+  background-color: #f8f8f8;
+}
+
+.domain-header {
+  background-color: #f5f5f5;
+  padding: 8px 12px;
+  border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.domain-group.active-domain .domain-header {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}
+
+.domain-name {
+  font-weight: 600;
+  flex: 1;
+}
+
+.item-count {
+  color: #666;
+  font-size: 11px;
+}
+
+.domain-group .blocked-item {
+  margin: 0;
+  border-radius: 0;
+  border-bottom: 1px solid #f0f0f0;
+  background-color: transparent;
+}
+
+.domain-group .blocked-item:last-child {
+  border-bottom: none;
+}
+
+.domain-group.active-domain .blocked-item.active {
+  background-color: #e8f5e8;
+}
+
+.domain-group.inactive-domain .blocked-item {
+  opacity: 0.6;
+}
+
+.domain-tag {
+  font-size: 10px;
+  color: #666;
+  background-color: #f0f0f0;
+  padding: 2px 6px;
+  border-radius: 10px;
+  margin-right: 6px;
+  flex-shrink: 0;
+}
+
+.shortcut-info {
+  margin-top: 12px;
+  padding: 8px;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  border-left: 3px solid #17a2b8;
+}
+
+.shortcut-info .help-text {
+  margin: 4px 0;
+}
+
+.shortcut-info strong {
+  color: #17a2b8;
+}
+
+/* 帮助提示容器 */
+.help-container {
+  position: relative;
+}
+
+.help-container h3 {
+  cursor: help;
+}
+
+/* 提示框样式 */
+.help-tooltip {
+  position: absolute;
+  top: -10px;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  line-height: 1.4;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+  pointer-events: none;
+}
+
+.help-tooltip .help-text {
+  color: white;
+  margin: 4px 0;
+  font-size: 12px;
+}
+
+.help-tooltip .help-text:first-child {
+  margin-top: 0;
+}
+
+.help-tooltip .help-text:last-child {
+  margin-bottom: 0;
+}
+
+/* Hover效果 */
+.help-container:hover .help-tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(-20px);
+}
