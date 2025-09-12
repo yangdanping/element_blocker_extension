@@ -59,7 +59,7 @@ h3 {
   gap: 8px;
 }
 
-#classInput {
+#classInput, #styleClassInput {
   flex: 1;
   padding: 8px 12px;
   border: 1px solid #ddd;
@@ -67,16 +67,16 @@ h3 {
   font-size: 14px;
 }
 
-#classInput::placeholder {
+#classInput::placeholder, #styleClassInput::placeholder {
   font-size: 11px;
 }
 
-#classInput:focus {
+#classInput:focus, #styleClassInput:focus {
   outline: none;
   border-color: #4285f4;
 }
 
-#addBtn {
+#addBtn, #addStyleBtn {
   padding: 8px 16px;
   background-color: #4285f4;
   color: white;
@@ -87,7 +87,7 @@ h3 {
   font-weight: 500;
 }
 
-#addBtn:hover {
+#addBtn:hover, #addStyleBtn:hover {
   background-color: #3367d6;
 }
 
@@ -151,7 +151,6 @@ h3 {
 }
 
 .status-indicator {
-  margin: 0 8px;
   font-size: 14px;
   cursor: pointer;
   user-select: none;
@@ -175,7 +174,7 @@ h3 {
   cursor: pointer;
   font-size: 16px;
   padding: 2px;
-  line-height: 1;
+  margin-top: 4px;
   flex-shrink: 0;
   width: 20px;
   height: 20px;
@@ -428,4 +427,276 @@ h3 {
   opacity: 1;
   visibility: visible;
   transform: translateY(-20px);
+}
+
+/* Tab切换样式 */
+.tab-container {
+  margin-bottom: 16px;
+}
+
+.tab-buttons {
+  display: flex;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  padding: 4px;
+  gap: 4px;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 8px 16px;
+  background: none;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: #666;
+  transition: all 0.2s ease;
+}
+
+.tab-btn:hover {
+  background-color: #e9ecef;
+  color: #333;
+}
+
+.tab-btn.active {
+  background-color: #4285f4;
+  color: white;
+  box-shadow: 0 1px 3px rgba(66, 133, 244, 0.3);
+}
+
+/* Tab内容样式 */
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+/* 样式列表 */
+.style-list {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+/* 模态框样式 */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal.show {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background-color: white;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 80%;
+  overflow-y: auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+  from {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.modal-header h3 {
+  margin: 0;
+  color: #333;
+  font-size: 18px;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #666;
+  cursor: pointer;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.modal-body {
+  padding: 20px;
+}
+
+.modal-body .help-text {
+  margin-bottom: 12px;
+  color: #666;
+}
+
+#cssInput {
+  width: 100%;
+  min-height: 120px;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 13px;
+  line-height: 1.4;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+#cssInput:focus {
+  outline: none;
+  border-color: #4285f4;
+  box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2);
+}
+
+.css-examples {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.css-examples .help-text {
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.example-btn {
+  display: inline-block;
+  margin: 4px 8px 4px 0;
+  padding: 6px 12px;
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  color: #495057;
+  transition: all 0.2s ease;
+}
+
+.example-btn:hover {
+  background-color: #e9ecef;
+  border-color: #dee2e6;
+}
+
+.example-btn:active {
+  background-color: #dee2e6;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 20px;
+  border-top: 1px solid #e0e0e0;
+  background-color: #f8f9fa;
+}
+
+.modal-btn {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.modal-btn.cancel {
+  background-color: #6c757d;
+  color: white;
+}
+
+.modal-btn.cancel:hover {
+  background-color: #5a6268;
+}
+
+.modal-btn.save {
+  background-color: #4285f4;
+  color: white;
+}
+
+.modal-btn.save:hover {
+  background-color: #3367d6;
+}
+
+/* 样式列表特殊样式 */
+.style-item-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.css-preview {
+  font-size: 10px;
+  color: #888;
+  font-family: 'Courier New', Courier, monospace;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.edit-btn {
+  background: none;
+  border: none;
+  color: #4285f4;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 2px;
+  margin-top: 2px;
+  line-height: 1;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.edit-btn:hover {
+  color: #3367d6;
+}
+
+/* 控制按钮容器 */
+.item-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
 }

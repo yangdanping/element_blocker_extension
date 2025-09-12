@@ -11,6 +11,8 @@ class ElementBlockerBackground {
     chrome.commands.onCommand.addListener((command) => {
       if (command === 'toggle-domain-blocking') {
         this.handleToggleDomainBlocking();
+      } else if (command === 'toggle-domain-styling') {
+        this.handleToggleDomainStyling();
       }
     });
   }
@@ -35,6 +37,26 @@ class ElementBlockerBackground {
     }
   }
 
+  async handleToggleDomainStyling() {
+    try {
+      // 获取当前活动标签页
+      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      if (!tab || !tab.url) return;
+
+      // 获取域名
+      const url = new URL(tab.url);
+      const domain = url.hostname;
+
+      // 发送消息到内容脚本
+      await chrome.tabs.sendMessage(tab.id, {
+        action: 'toggleDomainStyling',
+        domain: domain
+      });
+    } catch (error) {
+      console.error('Failed to handle toggle domain styling:', error);
+    }
+  }
+
   setupTabListener() {
     // 监听标签页切换和更新
     chrome.tabs.onActivated.addListener(async (activeInfo) => {
@@ -51,7 +73,7 @@ class ElementBlockerBackground {
   setupStorageListener() {
     // 监听存储变化
     chrome.storage.onChanged.addListener(async (changes, namespace) => {
-      if (namespace === 'local' && (changes.blockedClasses || changes.isEnabled)) {
+      if (namespace === 'local' && (changes.blockedClasses || changes.customStyles || changes.isEnabled || changes.isStyleEnabled)) {
         // 更新当前活动标签页的图标
         try {
           const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
