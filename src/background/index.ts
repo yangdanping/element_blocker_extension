@@ -30,14 +30,25 @@ async function handleToggleDomainBlocking() {
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     if (!tab?.url || !tab.id) return;
 
+    // 跳过不支持 content script 的页面
+    if (!tab.url.startsWith('http://') && !tab.url.startsWith('https://')) {
+      console.log('Cannot toggle blocking on non-http pages');
+      return;
+    }
+
     const url = new URL(tab.url);
     const domain = url.hostname;
 
-    // 发送消息给 content script
-    await chrome.tabs.sendMessage(tab.id, {
-      action: 'toggleDomainBlocking',
-      domain
-    });
+    // 发送消息给 content script，静默处理错误
+    try {
+      await chrome.tabs.sendMessage(tab.id, {
+        action: 'toggleDomainBlocking',
+        domain
+      });
+    } catch {
+      // Content script 可能未加载（例如页面刚打开），忽略此错误
+      console.log('Content script not ready on this page');
+    }
   } catch (error) {
     console.error('Failed to toggle domain blocking:', error);
   }
