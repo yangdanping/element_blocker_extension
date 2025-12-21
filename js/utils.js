@@ -8,7 +8,7 @@
  * @param {Array} blockedClasses - 原始数据
  * @returns {Array} 标准化后的数据
  */
-export function normalizeBlockedClasses(blockedClasses) {
+function normalizeBlockedClasses(blockedClasses) {
   if (!Array.isArray(blockedClasses)) return [];
 
   return blockedClasses.map((item) => {
@@ -28,7 +28,7 @@ export function normalizeBlockedClasses(blockedClasses) {
  * @param {string} url - 完整 URL
  * @returns {string} 域名
  */
-export function getDomainFromUrl(url) {
+function getDomainFromUrl(url) {
   try {
     return new URL(url).hostname;
   } catch {
@@ -41,7 +41,7 @@ export function getDomainFromUrl(url) {
  * @param {string} className - 类名（可能包含空格分隔的多个类名）
  * @returns {string} CSS 选择器
  */
-export function generateSelector(className) {
+function generateSelector(className) {
   if (className.includes(' ')) {
     // 多个类名：需要同时包含所有指定的类（AND 逻辑）
     const classes = className.trim().split(/\s+/);
@@ -58,7 +58,7 @@ export function generateSelector(className) {
  * @param {string} currentDomain - 当前域名
  * @returns {Array} 激活的屏蔽项
  */
-export function getActiveBlockedClasses(blockedClasses, currentDomain) {
+function getActiveBlockedClasses(blockedClasses, currentDomain) {
   return blockedClasses.filter((item) => {
     return item.enabled && (item.domain === null || item.domain === currentDomain);
   });
@@ -69,7 +69,7 @@ export function getActiveBlockedClasses(blockedClasses, currentDomain) {
  * @param {Array} blockedClasses - 所有屏蔽项
  * @returns {Object} 按域名分组的对象
  */
-export function groupByDomain(blockedClasses) {
+function groupByDomain(blockedClasses) {
   const groups = {};
   blockedClasses.forEach((item) => {
     const domain = item.domain || null;
@@ -88,7 +88,7 @@ export function groupByDomain(blockedClasses) {
  * @param {string} domain - 域名
  * @returns {boolean} 是否重复
  */
-export function isDuplicateClass(blockedClasses, className, domain) {
+function isDuplicateClass(blockedClasses, className, domain) {
   return blockedClasses.some((existing) => {
     if (existing.domain !== domain) return false;
     if (existing.className === className) return true;
@@ -108,7 +108,7 @@ export function isDuplicateClass(blockedClasses, className, domain) {
  * @param {string} type - 消息类型
  * @param {Object} options - 配置选项
  */
-export function showTempMessage(text, type = 'info', options = {}) {
+function showTempMessage(text, type = 'info', options = {}) {
   const { duration = 2000, position = 'top' } = options;
 
   const colors = {
@@ -147,7 +147,7 @@ export function showTempMessage(text, type = 'info', options = {}) {
 /**
  * 存储相关的常量
  */
-export const STORAGE_KEYS = {
+const STORAGE_KEYS = {
   BLOCKED_CLASSES: 'blockedClasses',
   IS_ENABLED: 'isEnabled'
 };
