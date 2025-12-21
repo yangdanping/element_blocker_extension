@@ -11,120 +11,47 @@
         <button id="settingsBtn" class="settings-btn" title="打开设置页面">⚙️</button>
       </div>
 
-      <!-- Tab切换 -->
-      <div class="tab-container">
-        <div class="tab-buttons">
-          <button id="blockTab" class="tab-btn active">屏蔽项</button>
-          <button id="styleTab" class="tab-btn">修改项</button>
+      <!-- 屏蔽功能内容 -->
+      <div class="section">
+        <div class="help-container">
+          <h3>添加要屏蔽的类名</h3>
+          <div class="help-tooltip">
+            <p class="help-text">支持包含匹配和组合匹配：</p>
+            <p class="help-text">• 单个类名：如 "ad" 将匹配包含 "ad" 的所有类名</p>
+            <p class="help-text">• 多个类名：如 "class1 class2" 将匹配同时包含这两个类的元素</p>
+          </div>
+        </div>
+        <div class="input-group">
+          <input type="text" id="classInput" placeholder="输入类名片段 (例如: ad, banner)" />
+          <button id="addBtn">+</button>
         </div>
       </div>
 
-      <!-- 屏蔽项内容 -->
-      <div id="blockContent" class="tab-content active">
-        <div class="section">
-          <div class="help-container">
-            <h3>添加要屏蔽的类名</h3>
-            <div class="help-tooltip">
-              <p class="help-text">支持包含匹配和组合匹配：</p>
-              <p class="help-text">• 单个类名：如 "ad" 将匹配包含 "ad" 的所有类名</p>
-              <p class="help-text">• 多个类名：如 "class1 class2" 将匹配同时包含这两个类的元素</p>
-            </div>
-          </div>
-          <div class="input-group">
-            <input type="text" id="classInput" placeholder="输入类名片段 (例如: ad, banner)" />
-            <button id="addBtn">+</button>
-          </div>
-        </div>
+      <div class="section">
+        <h3>已屏蔽的类名</h3>
+        <p class="help-text">点击类名切换启用状态，• 表示已启用，○ 表示已禁用</p>
+        <div id="blockedList" class="blocked-list"></div>
+      </div>
 
-        <div class="section">
-          <h3>已屏蔽的类名</h3>
-          <p class="help-text">点击类名切换启用状态，• 表示已启用，○ 表示已禁用</p>
-          <div id="blockedList" class="blocked-list"></div>
-        </div>
-
-        <div class="section">
-          <div class="button-group">
-            <button id="toggleBtn" class="toggle-btn">启用屏蔽</button>
-            <button id="clearBtn" class="clear-btn">清除所有</button>
-          </div>
-        </div>
-
-        <div class="section">
-          <h3>快捷操作</h3>
-          <button id="inspectBtn" class="inspect-btn">选择元素</button>
-          <p class="help-text">点击后在页面上点击要屏蔽的元素</p>
-          <div class="shortcut-info">
-            <p class="help-text"><strong>快捷键:</strong> Cmd+E (Mac) / Ctrl+E (Windows/Linux)</p>
-            <p class="help-text">快速切换当前域名下所有屏蔽项的状态</p>
-          </div>
+      <div class="section">
+        <div class="button-group">
+          <button id="toggleBtn" class="toggle-btn">启用屏蔽</button>
+          <button id="clearBtn" class="clear-btn">清除所有</button>
         </div>
       </div>
 
-      <!-- 修改项内容 -->
-      <div id="styleContent" class="tab-content">
-        <div class="section">
-          <div class="help-container">
-            <h3>添加要修改样式的类名</h3>
-            <div class="help-tooltip">
-              <p class="help-text">输入规则与屏蔽项相同：</p>
-              <p class="help-text">• 单个类名：如 "button" 将匹配包含 "button" 的所有类名</p>
-              <p class="help-text">• 多个类名：如 "class1 class2" 将匹配同时包含这两个类的元素</p>
-            </div>
-          </div>
-          <div class="input-group">
-            <input type="text" id="styleClassInput" placeholder="输入类名片段 (例如: button, header)" />
-            <button id="addStyleBtn">+</button>
-          </div>
-        </div>
-
-        <div class="section">
-          <h3>已修改样式的类名</h3>
-          <p class="help-text">点击类名编辑CSS规则，• 表示已启用，○ 表示已禁用</p>
-          <div id="styleList" class="style-list"></div>
-        </div>
-
-        <div class="section">
-          <div class="button-group">
-            <button id="toggleStyleBtn" class="toggle-btn">启用样式修改</button>
-            <button id="clearStyleBtn" class="clear-btn">清除所有</button>
-          </div>
-        </div>
-
-        <div class="section">
-          <h3>快捷操作</h3>
-          <div class="shortcut-info">
-            <p class="help-text"><strong>快捷键:</strong> Alt+E (Mac/Windows)</p>
-            <p class="help-text">快速切换当前域名下所有样式修改项的状态</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- CSS编辑模态框 -->
-      <div id="cssModal" class="modal">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h3 id="cssModalTitle">编辑CSS规则</h3>
-            <button id="cssModalClose" class="modal-close">×</button>
-          </div>
-          <div class="modal-body">
-            <p class="help-text">输入CSS规则，将应用到匹配的元素上：</p>
-            <textarea id="cssInput" placeholder="例如: color: red; font-size: 16px; background: yellow;"></textarea>
-            <div class="css-examples">
-              <p class="help-text">常用示例：</p>
-              <button class="example-btn" data-css="display: none;">隐藏元素</button>
-              <button class="example-btn" data-css="color: red;">红色文字</button>
-              <button class="example-btn" data-css="background: yellow;">黄色背景</button>
-              <button class="example-btn" data-css="border: 2px solid red;">红色边框</button>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button id="cssModalCancel" class="modal-btn cancel">取消</button>
-            <button id="cssModalSave" class="modal-btn save">保存</button>
-          </div>
+      <div class="section">
+        <h3>快捷操作</h3>
+        <button id="inspectBtn" class="inspect-btn">选择元素</button>
+        <p class="help-text">点击后在页面上点击要屏蔽的元素</p>
+        <div class="shortcut-info">
+          <p class="help-text"><strong>快捷键:</strong> Cmd+E (Mac) / Ctrl+E (Windows/Linux)</p>
+          <p class="help-text">快速切换当前域名下所有屏蔽项的状态</p>
         </div>
       </div>
     </div>
 
+    <script src="js/utils.js"></script>
     <script src="js/popup.js"></script>
   </body>
 </html>

@@ -20,7 +20,6 @@ class ElementBlockerOptions {
         document.getElementById('currentShortcut').textContent = '未设置';
       }
     } catch (error) {
-      console.error('Failed to load current shortcut:', error);
       document.getElementById('currentShortcut').textContent = '加载失败';
     }
   }
@@ -29,8 +28,7 @@ class ElementBlockerOptions {
     try {
       const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
       if (tabs[0] && tabs[0].url) {
-        const url = new URL(tabs[0].url);
-        const domain = url.hostname;
+        const domain = getDomainFromUrl(tabs[0].url);
 
         if (domain && !domain.startsWith('chrome://')) {
           document.getElementById('domainName').textContent = domain;
@@ -38,7 +36,7 @@ class ElementBlockerOptions {
         }
       }
     } catch (error) {
-      console.error('Failed to load current domain:', error);
+      // 静默失败
     }
   }
 
@@ -75,8 +73,6 @@ class ElementBlockerOptions {
         url: 'chrome://extensions/shortcuts'
       });
     } catch (error) {
-      console.error('Failed to open shortcut settings:', error);
-
       // 如果无法打开设置页面，显示提示信息
       this.showMessage('请手动访问 chrome://extensions/shortcuts 来设置快捷键', 'info');
     }
@@ -85,7 +81,7 @@ class ElementBlockerOptions {
   async exportConfig() {
     try {
       // 从storage读取所有配置
-      const data = await chrome.storage.local.get(['blockedClasses', 'customStyles', 'isEnabled', 'isStyleEnabled']);
+      const data = await chrome.storage.local.get(['blockedClasses', 'isEnabled']);
 
       // 创建导出对象
       const exportData = {
@@ -93,9 +89,7 @@ class ElementBlockerOptions {
         exportDate: new Date().toISOString(),
         config: {
           blockedClasses: data.blockedClasses || [],
-          customStyles: data.customStyles || [],
-          isEnabled: data.isEnabled !== false,
-          isStyleEnabled: data.isStyleEnabled !== false
+          isEnabled: data.isEnabled !== false
         }
       };
 
@@ -121,7 +115,6 @@ class ElementBlockerOptions {
 
       this.showMessage('配置导出成功', 'success');
     } catch (error) {
-      console.error('Failed to export config:', error);
       this.showMessage('配置导出失败：' + error.message, 'error');
     }
   }
@@ -156,14 +149,8 @@ class ElementBlockerOptions {
       if (!Array.isArray(config.blockedClasses)) {
         config.blockedClasses = [];
       }
-      if (!Array.isArray(config.customStyles)) {
-        config.customStyles = [];
-      }
       if (typeof config.isEnabled !== 'boolean') {
         config.isEnabled = true;
-      }
-      if (typeof config.isStyleEnabled !== 'boolean') {
-        config.isStyleEnabled = true;
       }
 
       // 询问用户是覆盖还是合并
@@ -178,13 +165,11 @@ class ElementBlockerOptions {
 
       if (shouldMerge) {
         // 合并模式：读取现有配置并合并
-        const existingData = await chrome.storage.local.get(['blockedClasses', 'customStyles', 'isEnabled', 'isStyleEnabled']);
+        const existingData = await chrome.storage.local.get(['blockedClasses', 'isEnabled']);
 
         finalConfig = {
           blockedClasses: this.mergeArrays(existingData.blockedClasses || [], config.blockedClasses),
-          customStyles: this.mergeArrays(existingData.customStyles || [], config.customStyles),
-          isEnabled: config.isEnabled,
-          isStyleEnabled: config.isStyleEnabled
+          isEnabled: config.isEnabled
         };
       }
 
@@ -194,17 +179,13 @@ class ElementBlockerOptions {
       // 清空文件选择器
       document.getElementById('importFile').value = '';
 
-      this.showMessage(
-        `配置${shouldMerge ? '合并' : '导入'}成功！共导入 ${finalConfig.blockedClasses.length} 条屏蔽规则和 ${finalConfig.customStyles.length} 条样式修改`,
-        'success'
-      );
+      this.showMessage(`配置${shouldMerge ? '合并' : '导入'}成功！共导入 ${finalConfig.blockedClasses.length} 条屏蔽规则`, 'success');
 
       // 延迟刷新页面以显示更新后的配置
       setTimeout(() => {
         window.location.reload();
       }, 1500);
     } catch (error) {
-      console.error('Failed to import config:', error);
       this.showMessage('配置导入失败：' + error.message, 'error');
       // 清空文件选择器
       document.getElementById('importFile').value = '';
@@ -216,11 +197,7 @@ class ElementBlockerOptions {
     const merged = [...existingArr];
 
     newArr.forEach((newItem) => {
-      const isDuplicate = merged.some((existing) => {
-        return existing.className === newItem.className && (existing.domain || null) === (newItem.domain || null);
-      });
-
-      if (!isDuplicate) {
+      if (!isDuplicateClass(merged, newItem.className, newItem.domain || null)) {
         merged.push(newItem);
       }
     });
@@ -262,7 +239,6 @@ class ElementBlockerOptions {
           </p>
           <ul style="margin: 0; padding-left: 20px; font-size: 13px; color: #666;">
             <li>屏蔽规则数量：${config.blockedClasses.length}</li>
-            <li>样式修改数量：${config.customStyles.length}</li>
           </ul>
         </div>
         <p style="margin: 16px 0; font-size: 14px; color: #666;">

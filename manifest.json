@@ -13,13 +13,6 @@
         "mac": "Command+E"
       },
       "description": "切换当前域名的屏蔽状态"
-    },
-    "toggle-domain-styling": {
-      "suggested_key": {
-        "default": "Alt+E",
-        "mac": "Alt+E"
-      },
-      "description": "切换当前域名的样式修改状态"
     }
   },
 
@@ -38,7 +31,7 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["js/content.js"],
+      "js": ["js/utils.js", "js/content.js"],
       "css": ["css/content.css"],
       "run_at": "document_start"
     }

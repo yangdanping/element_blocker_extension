@@ -59,7 +59,7 @@ h3 {
   gap: 8px;
 }
 
-#classInput, #styleClassInput {
+#classInput {
   flex: 1;
   padding: 8px 12px;
   border: 1px solid #ddd;
@@ -67,16 +67,16 @@ h3 {
   font-size: 14px;
 }
 
-#classInput::placeholder, #styleClassInput::placeholder {
+#classInput::placeholder {
   font-size: 11px;
 }
 
-#classInput:focus, #styleClassInput:focus {
+#classInput:focus {
   outline: none;
   border-color: #4285f4;
 }
 
-#addBtn, #addStyleBtn {
+#addBtn {
   padding: 8px 16px;
   background-color: #4285f4;
   color: white;
@@ -87,7 +87,7 @@ h3 {
   font-weight: 500;
 }
 
-#addBtn:hover, #addStyleBtn:hover {
+#addBtn:hover {
   background-color: #3367d6;
 }
 
