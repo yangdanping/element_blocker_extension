@@ -1,0 +1,84 @@
+/* Content Script 注入样式 - 用于 Shadow DOM 外部的元素高亮 */
+
+/* 元素高亮覆盖层 */
+#element-blocker-highlight {
+  position: absolute;
+  pointer-events: none;
+  border: 2px solid #ef4444;
+  background-color: rgba(239, 68, 68, 0.1);
+  z-index: 999999;
+  display: none;
+  transition: all 0.1s ease;
+}
+
+/* 检查模式提示消息 */
+#element-blocker-inspect-message {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #3b82f6;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  z-index: 1000001;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 14px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* 临时消息提示 */
+.element-blocker-toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 20px;
+  border-radius: 6px;
+  color: white;
+  font-size: 14px;
+  font-family: system-ui, -apple-system, sans-serif;
+  z-index: 1000001;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  animation: fadeInUp 0.3s ease;
+}
+
+.element-blocker-toast.success {
+  background-color: #22c55e;
+}
+
+.element-blocker-toast.error {
+  background-color: #ef4444;
+}
+
+.element-blocker-toast.warning {
+  background-color: #f59e0b;
+  color: #1f2937;
+}
+
+.element-blocker-toast.info {
+  background-color: #3b82f6;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}

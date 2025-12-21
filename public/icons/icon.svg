@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <!-- 背景圆形 -->
+  <circle cx="64" cy="64" r="60" fill="#6b6b6b" stroke="#fff" stroke-width="4" />
+
+  <!-- 禁止符号 - 斜线 -->
+  <line x1="25" y1="25" x2="103" y2="103" stroke="#fff" stroke-width="8" stroke-linecap="round" />
+
+  <!-- 元素符号 - 字母E -->
+  <text x="64" y="86" font-family="Arial, sans-serif" font-size="60" font-weight="bold" text-anchor="middle"
+    fill="#fff">E</text>
+</svg>
