@@ -1,5 +1,5 @@
 {
-  "name": "element-blocker-extension",
+  "name": "element_blocker_extension",
   "version": "2.0.1",
   "type": "module",
   "scripts": {
@@ -7,7 +7,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "prettier": "prettier --write .",
-    "update:prettier": "git fetch https://github.com/yangdanping/prettier-config-repo.git main && git checkout FETCH_HEAD -- .prettierrc .prettierignore"
+    "update:prettier": "git fetch https://github.com/yangdanping/prettier_config_repo.git main && git checkout FETCH_HEAD -- .prettierrc .prettierignore"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",
