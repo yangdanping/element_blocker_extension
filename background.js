@@ -28,7 +28,7 @@ class ElementBlockerBackground {
       // 发送消息到内容脚本
       await chrome.tabs.sendMessage(tab.id, {
         action: 'toggleDomainBlocking',
-        domain: domain
+        domain: domain,
       });
     } catch (error) {
       console.error('Failed to handle toggle domain blocking:', error);
@@ -89,7 +89,7 @@ class ElementBlockerBackground {
 
       await chrome.action.setIcon({
         path: iconPath,
-        tabId: tabId
+        tabId: tabId,
       });
     } catch (error) {
       console.error('Failed to update icon for tab:', error);

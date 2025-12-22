@@ -19,7 +19,7 @@ import {
   Tabs,
   TabsContent,
   TabsList,
-  TabsTrigger
+  TabsTrigger,
 } from '@/components/ui';
 
 /**
@@ -91,8 +91,8 @@ export default function App() {
       exportDate: new Date().toISOString(),
       config: {
         blockedClasses,
-        isEnabled
-      }
+        isEnabled,
+      },
     };
 
     const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
@@ -128,7 +128,7 @@ export default function App() {
 
       setImportData({
         blockedClasses: data.config.blockedClasses || [],
-        isEnabled: data.config.isEnabled !== false
+        isEnabled: data.config.isEnabled !== false,
       });
       setImportDialogOpen(true);
     } catch (err) {
@@ -279,8 +279,8 @@ export default function App() {
               message.type === 'success'
                 ? 'bg-success text-success-foreground'
                 : message.type === 'error'
-                ? 'bg-destructive text-destructive-foreground'
-                : 'bg-muted text-muted-foreground'
+                  ? 'bg-destructive text-destructive-foreground'
+                  : 'bg-muted text-muted-foreground'
             }`}
           >
             {message.type === 'success' ? <CheckCircle className="h-4 w-4" /> : message.type === 'error' ? <AlertCircle className="h-4 w-4" /> : null}

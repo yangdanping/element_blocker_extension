@@ -9,16 +9,16 @@ export default defineConfig({
   plugins: [react(), tailwindcss(), crx({ manifest })],
   resolve: {
     alias: {
-      '@': resolve(__dirname, './src')
-    }
+      '@': resolve(__dirname, './src'),
+    },
   },
   build: {
     outDir: 'dist',
     rollupOptions: {
       input: {
         popup: resolve(__dirname, 'src/popup/index.html'),
-        options: resolve(__dirname, 'src/options/index.html')
-      }
-    }
-  }
+        options: resolve(__dirname, 'src/options/index.html'),
+      },
+    },
+  },
 });

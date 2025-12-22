@@ -127,7 +127,7 @@ const useBlockerStore = create<BlockerState>((set, get) => ({
   // Action：添加屏蔽项
   addClass: (className, domain) => {
     set((state) => ({
-      blockedClasses: [...state.blockedClasses, { className, enabled: true, domain }]
+      blockedClasses: [...state.blockedClasses, { className, enabled: true, domain }],
     }));
   },
 
@@ -136,9 +136,9 @@ const useBlockerStore = create<BlockerState>((set, get) => ({
     const data = await chrome.storage.local.get(['blockedClasses', 'isEnabled']);
     set({
       blockedClasses: data.blockedClasses || [],
-      isEnabled: data.isEnabled ?? true
+      isEnabled: data.isEnabled ?? true,
     });
-  }
+  },
 }));
 
 // 选择器 Hook（性能优化）

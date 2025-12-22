@@ -54,7 +54,7 @@ class ElementBlockerPopup {
     try {
       await chrome.storage.local.set({
         blockedClasses: this.blockedClasses,
-        isEnabled: this.isEnabled
+        isEnabled: this.isEnabled,
       });
       this.notifyContentScript();
     } catch (error) {
@@ -120,7 +120,7 @@ class ElementBlockerPopup {
     this.blockedClasses.push({
       className: cleanInput,
       enabled: true,
-      domain: this.currentDomain
+      domain: this.currentDomain,
     });
     this.classInput.value = '';
     this.saveData();
@@ -301,7 +301,7 @@ class ElementBlockerPopup {
       await chrome.tabs.sendMessage(tab.id, {
         action: 'updateBlocking',
         blockedClasses: this.blockedClasses,
-        isEnabled: this.isEnabled
+        isEnabled: this.isEnabled,
       });
     } catch (error) {
       // 静默处理错误，可能是页面还没有加载内容脚本

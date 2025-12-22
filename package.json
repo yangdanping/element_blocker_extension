@@ -7,7 +7,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "prettier": "prettier --write .",
-    "update:prettier-config": "[ -d .prettier-config ] && git subtree pull --prefix=.prettier-config https://github.com/yangdanping/prettier-config-repo.git main --squash || git subtree add --prefix=.prettier-config https://github.com/yangdanping/prettier-config-repo.git main --squash"
+    "update:prettier": "git fetch https://github.com/yangdanping/prettier-config-repo.git main && git checkout FETCH_HEAD -- .prettierrc .prettierignore"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",

@@ -70,7 +70,7 @@ class ElementBlockerOptions {
     try {
       // Chrome 浏览器的快捷键设置页面
       await chrome.tabs.create({
-        url: 'chrome://extensions/shortcuts'
+        url: 'chrome://extensions/shortcuts',
       });
     } catch (error) {
       // 如果无法打开设置页面，显示提示信息
@@ -89,8 +89,8 @@ class ElementBlockerOptions {
         exportDate: new Date().toISOString(),
         config: {
           blockedClasses: data.blockedClasses || [],
-          isEnabled: data.isEnabled !== false
-        }
+          isEnabled: data.isEnabled !== false,
+        },
       };
 
       // 转换为JSON字符串
@@ -169,7 +169,7 @@ class ElementBlockerOptions {
 
         finalConfig = {
           blockedClasses: this.mergeArrays(existingData.blockedClasses || [], config.blockedClasses),
-          isEnabled: config.isEnabled
+          isEnabled: config.isEnabled,
         };
       }
 

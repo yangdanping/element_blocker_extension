@@ -40,8 +40,9 @@ export default function App() {
   useEffect(() => {
     // 加载存储的数据
     loadFromStorage();
-
     // 获取当前域名
+    // chrome.tabs.query: 查询浏览器标签页
+    // { active: true, currentWindow: true } 表示获取当前窗口中正在激活（用户看着）的那个标签页
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       if (tabs[0]?.url) {
         setCurrentDomain(getDomainFromUrl(tabs[0].url));
@@ -56,13 +57,15 @@ export default function App() {
     if (blockedClasses.length > 0 || !isEnabled) {
       saveToStorage();
       // 通知 content script 更新
+      // chrome.tabs.sendMessage: 消息通信机制
+      // Popup 和页面脚本(Content Script)是隔离的，这里发送消息告诉页面脚本：“配置变了，请实时更新屏蔽效果”
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         if (tabs[0]?.id) {
           chrome.tabs
             .sendMessage(tabs[0].id, {
               action: 'updateBlocking',
               blockedClasses,
-              isEnabled
+              isEnabled,
             })
             .catch(() => {
               // 静默处理错误
@@ -168,8 +171,8 @@ export default function App() {
             message.type === 'success'
               ? 'bg-success text-success-foreground'
               : message.type === 'error'
-              ? 'bg-destructive text-destructive-foreground'
-              : 'bg-muted text-muted-foreground'
+                ? 'bg-destructive text-destructive-foreground'
+                : 'bg-muted text-muted-foreground'
           }`}
         >
           {message.text}

@@ -112,7 +112,7 @@ h3 {
 .blocked-item:hover {
   background-color: #e9ecef;
   transform: translateY(-1px);
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .blocked-item.enabled {
@@ -214,7 +214,7 @@ h3 {
   background-color: #218838;
   color: #fff;
   transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .toggle-btn.disabled {
@@ -225,7 +225,7 @@ h3 {
 .toggle-btn.disabled:hover {
   background-color: #5a6268;
   transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .clear-btn {
@@ -245,7 +245,7 @@ h3 {
   background-color: #c82333;
   color: #fff;
   transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .inspect-btn {

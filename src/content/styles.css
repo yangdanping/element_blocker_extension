@@ -22,7 +22,10 @@
   padding: 12px 24px;
   border-radius: 8px;
   z-index: 1000001;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
   font-size: 14px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   animation: slideDown 0.3s ease;
@@ -49,7 +52,10 @@
   border-radius: 6px;
   color: white;
   font-size: 14px;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
   z-index: 1000001;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   animation: fadeInUp 0.3s ease;

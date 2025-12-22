@@ -84,7 +84,7 @@ function saveToLocalStorage(classes: BlockedClass[]) {
     const data = {
       domain: currentDomain,
       blockedClasses: domainClasses,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
 
     localStorage.setItem(getLocalStorageKey(), JSON.stringify(data));
@@ -106,7 +106,7 @@ async function restoreFromLocalStorage() {
 
     // 获取 Chrome Storage 中的数据
     const chromeData = await chrome.storage.local.get(['blockedClasses']);
-    let existingClasses: BlockedClass[] = chromeData.blockedClasses || [];
+    let existingClasses: BlockedClass[] = (chromeData.blockedClasses as BlockedClass[]) || [];
 
     // 向后兼容
     existingClasses = normalizeBlockedClasses(existingClasses);
@@ -445,7 +445,7 @@ function showClassSelector(classes: string[]) {
 async function addBlockedClass(className: string) {
   try {
     const data = await chrome.storage.local.get(['blockedClasses']);
-    let classes: BlockedClass[] = normalizeBlockedClasses(data.blockedClasses || []);
+    let classes: BlockedClass[] = normalizeBlockedClasses((data.blockedClasses as BlockedClass[]) || []);
 
     // 检查重复
     const isDuplicate = classes.some((item) => item.className === className && item.domain === currentDomain);
@@ -454,7 +454,7 @@ async function addBlockedClass(className: string) {
       classes.push({
         className,
         enabled: true,
-        domain: currentDomain
+        domain: currentDomain,
       });
 
       await chrome.storage.local.set({ blockedClasses: classes });
@@ -537,7 +537,7 @@ async function toggleDomainBlocking(domain: string) {
 
   try {
     const data = await chrome.storage.local.get(['blockedClasses']);
-    let classes: BlockedClass[] = data.blockedClasses || [];
+    let classes: BlockedClass[] = (data.blockedClasses as BlockedClass[]) || [];
 
     const domainClasses = classes.filter((item) => item.domain === currentDomain || item.domain === null);
 
@@ -606,12 +606,12 @@ function setupStorageListener() {
   chrome.storage.onChanged.addListener((changes, namespace) => {
     if (namespace === 'local') {
       if (changes.blockedClasses) {
-        blockedClasses = changes.blockedClasses.newValue || [];
+        blockedClasses = (changes.blockedClasses.newValue as BlockedClass[]) || [];
         updateBlockingStyles();
         notifyBackgroundUpdateIcon();
       }
       if (changes.isEnabled) {
-        isEnabled = changes.isEnabled.newValue;
+        isEnabled = changes.isEnabled.newValue as boolean;
         updateBlockingStyles();
         notifyBackgroundUpdateIcon();
       }
@@ -630,7 +630,7 @@ async function initialize() {
   // 加载设置
   try {
     const data = await chrome.storage.local.get(['blockedClasses', 'isEnabled']);
-    blockedClasses = normalizeBlockedClasses(data.blockedClasses || []);
+    blockedClasses = normalizeBlockedClasses((data.blockedClasses as BlockedClass[]) || []);
     isEnabled = data.isEnabled !== false;
   } catch (error) {
     console.error('Failed to load settings:', error);

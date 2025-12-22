@@ -205,19 +205,19 @@ export const useBlockerStore = create<BlockerState>((set, get) => ({
 
     // 使用函数式更新，确保基于最新状态
     set((state) => ({
-      blockedClasses: [...state.blockedClasses, { className, enabled: true, domain }]
+      blockedClasses: [...state.blockedClasses, { className, enabled: true, domain }],
     }));
   },
 
   removeClass: (className, domain) => {
     set((state) => ({
-      blockedClasses: state.blockedClasses.filter((item) => !(item.className === className && item.domain === domain))
+      blockedClasses: state.blockedClasses.filter((item) => !(item.className === className && item.domain === domain)),
     }));
   },
 
   toggleClass: (className, domain) => {
     set((state) => ({
-      blockedClasses: state.blockedClasses.map((item) => (item.className === className && item.domain === domain ? { ...item, enabled: !item.enabled } : item))
+      blockedClasses: state.blockedClasses.map((item) => (item.className === className && item.domain === domain ? { ...item, enabled: !item.enabled } : item)),
     }));
   },
 
@@ -260,7 +260,7 @@ export const useBlockerStore = create<BlockerState>((set, get) => ({
       const data = await chrome.storage.local.get(['blockedClasses', 'isEnabled', 'theme']);
 
       // 向后兼容处理
-      const blockedClasses = normalizeBlockedClasses(data.blockedClasses || []);
+      const blockedClasses = normalizeBlockedClasses((data.blockedClasses as BlockedClass[]) || []);
       const isEnabled = data.isEnabled !== false;
       const theme = (data.theme as Theme) || 'system';
 
@@ -284,7 +284,7 @@ export const useBlockerStore = create<BlockerState>((set, get) => ({
     } catch (error) {
       console.error('Failed to save to storage:', error);
     }
-  }
+  },
 }));
 
 // =========================================

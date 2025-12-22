@@ -10,7 +10,7 @@
  * 4. 作为消息路由中心
  */
 
-import type { BlockedClass } from '@/lib/types';
+
 
 // =========================================
 // 快捷键监听
@@ -43,7 +43,7 @@ async function handleToggleDomainBlocking() {
     try {
       await chrome.tabs.sendMessage(tab.id, {
         action: 'toggleDomainBlocking',
-        domain
+        domain,
       });
     } catch {
       // Content script 可能未加载（例如页面刚打开），忽略此错误
@@ -125,7 +125,7 @@ async function updateIconForTab(tabId: number) {
 
     await chrome.action.setIcon({
       path: iconPath,
-      tabId
+      tabId,
     });
   } catch (error) {
     console.error('Failed to update icon for tab:', error);
@@ -144,7 +144,7 @@ async function checkDomainHasActiveBlocking(domain: string): Promise<boolean> {
       return false;
     }
 
-    const blockedClasses: BlockedClass[] = data.blockedClasses || [];
+    const blockedClasses = Array.isArray(data.blockedClasses) ? data.blockedClasses : [];
 
     // 检查是否有针对该域名或全局的激活屏蔽项
     return blockedClasses.some((item) => {

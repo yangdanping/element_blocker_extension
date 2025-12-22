@@ -116,7 +116,7 @@ function showTempMessage(text, type = 'info', options = {}) {
     error: '#dc3545',
     warning: '#ffc107',
     info: '#17a2b8',
-    disabled: '#6b6b6b'
+    disabled: '#6b6b6b',
   };
 
   const message = document.createElement('div');
@@ -149,5 +149,5 @@ function showTempMessage(text, type = 'info', options = {}) {
  */
 const STORAGE_KEYS = {
   BLOCKED_CLASSES: 'blockedClasses',
-  IS_ENABLED: 'isEnabled'
+  IS_ENABLED: 'isEnabled',
 };

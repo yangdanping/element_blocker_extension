@@ -28,7 +28,7 @@ class ElementBlockerContent {
       const data = {
         domain: this.currentDomain,
         blockedClasses: domainClasses,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
 
       localStorage.setItem(this.getLocalStorageKey(), JSON.stringify(data));
@@ -456,7 +456,7 @@ class ElementBlockerContent {
         blockedClasses.push({
           className,
           enabled: true,
-          domain: this.currentDomain
+          domain: this.currentDomain,
         });
         await chrome.storage.local.set({ blockedClasses });
 
