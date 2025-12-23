@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { Plus } from 'lucide-react';
-import { useBlockerStore } from '@/stores/blocker-store';
+import { useBlockerStore } from '@/stores/blocker.store';
 import { Button, Input } from '@/components/ui';
 
 interface AddClassFormProps {

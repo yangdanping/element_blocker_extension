@@ -1,5 +1,5 @@
 import { X, Globe, Monitor } from 'lucide-react';
-import { useBlockerStore } from '@/stores/blocker-store';
+import { useBlockerStore } from '@/stores/blocker.store';
 import { Button, Badge, Switch, Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
 import type { GroupedClasses, BlockedClass } from '@/lib/types';
 

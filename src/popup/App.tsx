@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Settings, Crosshair, Moon, Sun, Power } from 'lucide-react';
-import { useBlockerStore, useGroupedClasses } from '@/stores/blocker-store';
+import { useBlockerStore, useGroupedClasses } from '@/stores/blocker.store';
 import { getDomainFromUrl } from '@/lib/utils';
 import { Button, Switch, Badge, Card, CardHeader, CardTitle } from '@/components/ui';
 import { BlockedClassList } from './components/BlockedClassList';

@@ -40,8 +40,12 @@ src/
 │   ├── types.ts           # 类型定义（理解数据结构）
 │   └── utils.ts           # 工具函数（cn, getDomainFromUrl, generateSelector）
 │
+├── utils/                  # 🟢 第1.5步：通用工具类
+│   └── index.ts           # Utils 类（静态方法：数据处理、辅助函数）
+│
 ├── stores/                 # 🟡 第2步：状态管理
-│   └── blocker-store.ts   # Zustand Store（带详细中文注释）
+│   ├── blocker-store.ts   # Zustand Store（带详细中文注释）
+│   └── blocker.type.ts    # Store 类型定义
 │
 ├── components/ui/          # 🔵 第3步：UI 组件
 │   ├── button.tsx         # 按钮组件
@@ -118,6 +122,7 @@ function generateSelector(className: string): string {
 ```typescript
 // src/stores/blocker-store.ts（简化版）
 import { create } from 'zustand';
+import Utils from '@/utils';
 
 const useBlockerStore = create<BlockerState>((set, get) => ({
   // 状态
@@ -142,7 +147,7 @@ const useBlockerStore = create<BlockerState>((set, get) => ({
 }));
 
 // 选择器 Hook（性能优化）
-export const useGroupedClasses = () => useBlockerStore((state) => groupByDomain(state.blockedClasses));
+export const useGroupedClasses = () => useBlockerStore((state) => Utils.groupByDomain(state.blockedClasses));
 ```
 
 > 💡 完整代码包含详细的中文注释，适合学习 Zustand 用法
@@ -301,7 +306,9 @@ function handleClick(e: MouseEvent) {
 | ---------------------------------------------------------- | -------- | --------------------------- |
 | [src/lib/types.ts](src/lib/types.ts)                       | 类型定义 | TypeScript 接口             |
 | [src/lib/utils.ts](src/lib/utils.ts)                       | 工具函数 | CSS 选择器生成、类名合并    |
+| [src/utils/index.ts](src/utils/index.ts)                   | 工具类   | 数据处理辅助函数            |
 | [src/stores/blocker-store.ts](src/stores/blocker-store.ts) | 状态管理 | Zustand create/set/get      |
+| [src/stores/blocker.type.ts](src/stores/blocker.type.ts)   | 类型定义 | Store 接口定义              |
 | [src/content/index.tsx](src/content/index.tsx)             | 核心逻辑 | 动态 CSS、元素选择器        |
 | [src/popup/App.tsx](src/popup/App.tsx)                     | 弹窗界面 | React Hooks、Zustand 选择器 |
 | [src/manifest.ts](src/manifest.ts)                         | 扩展配置 | Manifest V3、CRXJS          |

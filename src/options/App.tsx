@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { Keyboard, Download, Upload, Moon, Sun, Monitor, AlertCircle, CheckCircle } from 'lucide-react';
-import { useBlockerStore } from '@/stores/blocker-store';
+import { useBlockerStore } from '@/stores/blocker.store';
 import type { BlockedClass, Theme } from '@/lib/types';
 import {
   Button,
