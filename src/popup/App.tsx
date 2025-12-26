@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Settings, Crosshair, Moon, Sun, Power } from 'lucide-react';
 import { useBlockerStore, useGroupedClasses } from '@/stores/blocker.store';
-import { getDomainFromUrl } from '@/lib/utils';
+import { useMessage, useChromeMessage } from '@/hooks';
 import { Button, Switch, Badge, Card, CardHeader, CardTitle } from '@/components/ui';
 import { BlockedClassList } from './components/BlockedClassList';
 import { AddClassForm } from './components/AddClassForm';
@@ -31,8 +31,9 @@ export default function App() {
   // 使用自定义 hook 获取分组数据
   const groupedClasses = useGroupedClasses();
 
-  // 本地状态：消息提示
-  const [message, setMessage] = useState<{ text: string; type: string } | null>(null);
+  // 自定义 hooks
+  const { message, showMessage } = useMessage();
+  const { sendToActiveTab } = useChromeMessage();
 
   // =========================================
   // 初始化
@@ -40,15 +41,17 @@ export default function App() {
   useEffect(() => {
     // 加载存储的数据
     loadFromStorage();
-    // 获取当前域名
-    // chrome.tabs.query: 查询浏览器标签页
-    // { active: true, currentWindow: true } 表示获取当前窗口中正在激活（用户看着）的那个标签页
+  }, [loadFromStorage]);
+
+  // 获取当前域名
+  useEffect(() => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       if (tabs[0]?.url) {
-        setCurrentDomain(getDomainFromUrl(tabs[0].url));
+        const url = new URL(tabs[0].url);
+        setCurrentDomain(url.hostname);
       }
     });
-  }, [loadFromStorage, setCurrentDomain]);
+  }, [setCurrentDomain]);
 
   // 监听状态变化，自动保存
   const blockedClasses = useBlockerStore((state) => state.blockedClasses);
@@ -57,23 +60,16 @@ export default function App() {
     if (blockedClasses.length > 0 || !isEnabled) {
       saveToStorage();
       // 通知 content script 更新
-      // chrome.tabs.sendMessage: 消息通信机制
-      // Popup 和页面脚本(Content Script)是隔离的，这里发送消息告诉页面脚本：“配置变了，请实时更新屏蔽效果”
-      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        if (tabs[0]?.id) {
-          chrome.tabs
-            .sendMessage(tabs[0].id, {
-              action: 'updateBlocking',
-              blockedClasses,
-              isEnabled,
-            })
-            .catch(() => {
-              // 静默处理错误
-            });
-        }
+      //
+      // Popup 和页面脚本(Content Script)是隔离的，这里发送消息告诉页面脚本："配置变了，请实时更新屏蔽效果"
+      // 现在使用 useChromeMessage Hook 封装了这个逻辑，使代码更简洁且类型安全,里面的 chrome.tabs.sendMessage是一种消息通信机制
+      sendToActiveTab({
+        action: 'updateBlocking',
+        blockedClasses,
+        isEnabled,
       });
     }
-  }, [blockedClasses, isEnabled, saveToStorage]);
+  }, [blockedClasses, isEnabled, saveToStorage, sendToActiveTab]);
 
   // =========================================
   // 事件处理
@@ -88,13 +84,10 @@ export default function App() {
 
   /** 启动元素选择模式 */
   const handleStartInspecting = async () => {
-    try {
-      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-      if (tab?.id) {
-        await chrome.tabs.sendMessage(tab.id, { action: 'startInspecting' });
-        window.close();
-      }
-    } catch {
+    const result = await sendToActiveTab({ action: 'startInspecting' });
+    if (result.success) {
+      window.close();
+    } else {
       showMessage('无法启动元素选择器', 'error');
     }
   };
@@ -103,12 +96,6 @@ export default function App() {
   const handleOpenSettings = () => {
     chrome.runtime.openOptionsPage();
     window.close();
-  };
-
-  /** 显示临时消息 */
-  const showMessage = (text: string, type: string) => {
-    setMessage({ text, type });
-    setTimeout(() => setMessage(null), 2000);
   };
 
   // =========================================

@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { Keyboard, Download, Upload, Moon, Sun, Monitor, AlertCircle, CheckCircle } from 'lucide-react';
 import { useBlockerStore } from '@/stores/blocker.store';
+import { useMessage } from '@/hooks';
 import type { BlockedClass, Theme } from '@/lib/types';
 import {
   Button,
@@ -36,9 +37,11 @@ export default function App() {
   const loadFromStorage = useBlockerStore((state) => state.loadFromStorage);
   const saveToStorage = useBlockerStore((state) => state.saveToStorage);
 
+  // 自定义 hooks
+  const { message, showMessage } = useMessage({ duration: 3000 });
+
   // 本地状态
   const [currentShortcut, setCurrentShortcut] = useState<string>('加载中...');
-  const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' | 'info' } | null>(null);
   const [importDialogOpen, setImportDialogOpen] = useState(false);
   const [importData, setImportData] = useState<{ blockedClasses: BlockedClass[]; isEnabled: boolean } | null>(null);
 
@@ -66,12 +69,6 @@ export default function App() {
   // =========================================
   // 事件处理
   // =========================================
-
-  /** 显示消息 */
-  const showMessage = (text: string, type: 'success' | 'error' | 'info') => {
-    setMessage({ text, type });
-    setTimeout(() => setMessage(null), 3000);
-  };
 
   /** 打开快捷键设置 */
   const handleOpenShortcutSettings = () => {
