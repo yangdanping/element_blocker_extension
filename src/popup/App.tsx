@@ -6,7 +6,7 @@ import { Button, Switch, Badge, Card, CardHeader, CardTitle } from '@/components
 import { BlockedClassList } from './components/BlockedClassList';
 import { AddClassForm } from './components/AddClassForm';
 
-/**)
+/**
  * Popup 主应用组件
  */
 export default function App() {
@@ -23,7 +23,8 @@ export default function App() {
 
   // 获取 actions（actions 是稳定的引用，不会导致重新渲染）
   const setCurrentDomain = useBlockerStore((state) => state.setCurrentDomain);
-  const toggleEnabled = useBlockerStore((state) => state.toggleEnabled);
+  // const toggleEnabled = useBlockerStore((state) => state.toggleEnabled);
+  const toggleCurrentDomainEnabled = useBlockerStore((state) => state.toggleCurrentDomainEnabled);
   const setTheme = useBlockerStore((state) => state.setTheme);
   const loadFromStorage = useBlockerStore((state) => state.loadFromStorage);
   const saveToStorage = useBlockerStore((state) => state.saveToStorage);
@@ -70,6 +71,30 @@ export default function App() {
       });
     }
   }, [blockedClasses, isEnabled, saveToStorage, sendToActiveTab]);
+
+  // =========================================
+  // 辅助函数
+  // =========================================
+
+  /** 获取当前域名下所有屏蔽项的启用状态 */
+  const getCurrentDomainEnabled = () => {
+    if (!currentDomain) return false;
+    const currentDomainItems = blockedClasses.filter((item) => item.domain === currentDomain);
+    if (currentDomainItems.length === 0) return false;
+    return currentDomainItems.some((item) => item.enabled);
+  };
+
+  /** 获取当前域名的状态文本 */
+  const getCurrentDomainStatus = () => {
+    if (!currentDomain) return '无域名';
+    const currentDomainItems = blockedClasses.filter((item) => item.domain === currentDomain);
+    if (currentDomainItems.length === 0) return '无规则';
+    const enabledCount = currentDomainItems.filter((item) => item.enabled).length;
+    const totalCount = currentDomainItems.length;
+    if (enabledCount === 0) return '已禁用';
+    if (enabledCount === totalCount) return '已启用';
+    return `${enabledCount}/${totalCount}`;
+  };
 
   // =========================================
   // 事件处理
@@ -123,14 +148,14 @@ export default function App() {
             </div>
           </div>
 
-          {/* 当前域名 & 全局开关 */}
+          {/* 当前域名 & 当前域名开关 */}
           <div className="flex items-center justify-between mt-2">
-            <Badge variant="outline" className="text-xs font-mono">
+            <Badge variant="outline" className="text-xs font-mono" style={{ borderColor: '#81C995' }}>
               {currentDomain || '未知域名'}
             </Badge>
             <div className="flex items-center gap-2">
-              <span className="text-xs text-muted-foreground">{isEnabled ? '已启用' : '已禁用'}</span>
-              <Switch checked={isEnabled} onCheckedChange={toggleEnabled} />
+              <span className="text-xs text-muted-foreground">{getCurrentDomainStatus()}</span>
+              <Switch checked={getCurrentDomainEnabled()} onCheckedChange={toggleCurrentDomainEnabled} />
             </div>
           </div>
         </CardHeader>
@@ -140,9 +165,11 @@ export default function App() {
       <div className="p-4 border-b">
         <div className="flex gap-2">
           <AddClassForm onMessage={showMessage} />
-          <Button variant="outline" size="icon" onClick={handleStartInspecting} title="选择页面元素">
-            <Crosshair className="h-4 w-4" />
-          </Button>
+          <div className="flex items-start pt-0">
+            <Button variant="outline" size="icon" onClick={handleStartInspecting} title="选择页面元素" className="h-9 w-9">
+              <Crosshair className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -158,8 +185,8 @@ export default function App() {
             message.type === 'success'
               ? 'bg-success text-success-foreground'
               : message.type === 'error'
-                ? 'bg-destructive text-destructive-foreground'
-                : 'bg-muted text-muted-foreground'
+              ? 'bg-destructive text-destructive-foreground'
+              : 'bg-muted text-muted-foreground'
           }`}
         >
           {message.text}

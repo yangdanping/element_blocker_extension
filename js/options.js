@@ -302,7 +302,7 @@ class ElementBlockerOptions {
       font-size: 14px;
       z-index: 10000;
       max-width: 300px;
-      ${type === 'success' ? 'background-color: #66b279;' : ''}
+      ${type === 'success' ? 'background-color: #81C995;' : ''}
       ${type === 'error' ? 'background-color: #dc3545;' : ''}
       ${type === 'warning' ? 'background-color: #ffc107; color: #212529;' : ''}
       ${type === 'info' ? 'background-color: #17a2b8;' : ''}

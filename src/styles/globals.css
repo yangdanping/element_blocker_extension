@@ -42,7 +42,7 @@
   --destructive-foreground: oklch(0.985 0 0);
 
   /* 成功色 */
-  --success: oklch(0.627 0.194 149.214);
+  --success: #81C995;
   --success-foreground: oklch(0.985 0 0);
 
   /* 边框和输入框 */
@@ -80,7 +80,7 @@
   --destructive: oklch(0.704 0.191 22.216);
   --destructive-foreground: oklch(0.985 0 0);
 
-  --success: oklch(0.627 0.194 149.214);
+  --success: #81C995;
   --success-foreground: oklch(0.985 0 0);
 
   --border: oklch(0.269 0 0);

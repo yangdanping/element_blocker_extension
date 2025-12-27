@@ -14,6 +14,8 @@ export interface BlockedClass {
   enabled: boolean;
   /** 所属域名，null 表示全局生效 */
   domain: string | null;
+  /** 可选的标签名称，用于标识屏蔽项的用途 */
+  label?: string;
 }
 
 /**

@@ -112,7 +112,7 @@ function showTempMessage(text, type = 'info', options = {}) {
   const { duration = 2000, position = 'top' } = options;
 
   const colors = {
-    success: '#66b279',
+    success: '#81C995',
     error: '#dc3545',
     warning: '#ffc107',
     info: '#17a2b8',

@@ -62,7 +62,7 @@
 }
 
 .element-blocker-toast.success {
-  background-color: #22c55e;
+  background-color: #81C995;
 }
 
 .element-blocker-toast.error {
@@ -75,7 +75,8 @@
 }
 
 .element-blocker-toast.info {
-  background-color: #3b82f6;
+  background-color: #d1d5db;
+  color: #1f2937;
 }
 
 @keyframes fadeInUp {

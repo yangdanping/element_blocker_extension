@@ -56,7 +56,7 @@ export const useBlockerStore = create<BlockerState>((set, get) => ({
     set({ blockedClasses: classes });
   },
 
-  addClass: (className, domain) => {
+  addClass: (className, domain, label) => {
     const { blockedClasses } = get();
 
     // 检查重复
@@ -65,8 +65,36 @@ export const useBlockerStore = create<BlockerState>((set, get) => ({
     }
 
     // 使用函数式更新，确保基于最新状态
+    // 只有当 label 有实际值时才添加到对象中
+    const newItem: { className: string; enabled: boolean; domain: string | null; label?: string } = {
+      className,
+      enabled: true,
+      domain,
+    };
+    if (label && label.trim()) {
+      newItem.label = label.trim();
+    }
+
     set((state) => ({
-      blockedClasses: [...state.blockedClasses, { className, enabled: true, domain }],
+      blockedClasses: [...state.blockedClasses, newItem],
+    }));
+  },
+
+  updateClass: (oldClassName, oldDomain, newClassName, newLabel) => {
+    set((state) => ({
+      blockedClasses: state.blockedClasses.map((item) => {
+        if (item.className === oldClassName && item.domain === oldDomain) {
+          const updated = { ...item, className: newClassName };
+          // 处理 label：空字符串表示清除，undefined 表示不修改
+          if (newLabel === '') {
+            delete updated.label;
+          } else if (newLabel !== undefined) {
+            updated.label = newLabel.trim();
+          }
+          return updated;
+        }
+        return item;
+      }),
     }));
   },
 
@@ -79,6 +107,23 @@ export const useBlockerStore = create<BlockerState>((set, get) => ({
   toggleClass: (className, domain) => {
     set((state) => ({
       blockedClasses: state.blockedClasses.map((item) => (item.className === className && item.domain === domain ? { ...item, enabled: !item.enabled } : item)),
+    }));
+  },
+
+  toggleCurrentDomainEnabled: () => {
+    const { currentDomain, blockedClasses } = get();
+    if (!currentDomain) return;
+
+    // 获取当前域名下的屏蔽项
+    const currentDomainItems = blockedClasses.filter((item) => item.domain === currentDomain);
+    if (currentDomainItems.length === 0) return;
+
+    // 检查当前域名下的屏蔽项是否全部启用
+    const allEnabled = currentDomainItems.every((item) => item.enabled);
+
+    // 切换状态：如果全部启用则全部禁用，否则全部启用
+    set((state) => ({
+      blockedClasses: state.blockedClasses.map((item) => (item.domain === currentDomain ? { ...item, enabled: !allEnabled } : item)),
     }));
   },
 

@@ -23,16 +23,31 @@ export interface BlockerState {
   setBlockedClasses: (classes: BlockedClass[]) => void;
 
   /**
+   * 切换当前域名下所有屏蔽项的启用状态
+   */
+  toggleCurrentDomainEnabled: () => void;
+
+  /**
    * 添加新的屏蔽项
    * @param className - 类名
    * @param domain - 域名，null 表示全局
+   * @param label - 可选的标签名称
    */
-  addClass: (className: string, domain: string | null) => void;
+  addClass: (className: string, domain: string | null, label?: string) => void;
 
   /**
    * 删除屏蔽项
    */
   removeClass: (className: string, domain: string | null) => void;
+
+  /**
+   * 更新屏蔽项（用于编辑标签和类名）
+   * @param oldClassName - 原类名
+   * @param oldDomain - 原域名
+   * @param newClassName - 新类名
+   * @param newLabel - 新标签（undefined 表示不修改，空字符串表示清除）
+   */
+  updateClass: (oldClassName: string, oldDomain: string | null, newClassName: string, newLabel?: string) => void;
 
   /**
    * 切换单个屏蔽项的启用状态

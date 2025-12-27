@@ -237,23 +237,42 @@ function removeHighlight() {
 
 function handleMouseOver(event: MouseEvent) {
   if (!isInspecting) return;
+
+  // 检查是否点击的是弹窗内的元素
+  const target = event.target as HTMLElement;
+  if (target.closest('[data-element-blocker-modal]')) {
+    return;
+  }
+
   event.stopPropagation();
-  currentHoveredElement = event.target as HTMLElement;
+  currentHoveredElement = target;
   highlightElement(currentHoveredElement);
 }
 
-function handleMouseOut(_event: MouseEvent) {
+function handleMouseOut(event: MouseEvent) {
   if (!isInspecting) return;
+
+  // 检查是否点击的是弹窗内的元素
+  const target = event.target as HTMLElement;
+  if (target.closest('[data-element-blocker-modal]')) {
+    return;
+  }
+
   removeHighlight();
 }
 
 function handleInspectClick(event: MouseEvent) {
   if (!isInspecting) return;
 
+  // 检查是否点击的是弹窗内的元素
+  const element = event.target as HTMLElement;
+  if (element.closest('[data-element-blocker-modal]')) {
+    return;
+  }
+
   event.preventDefault();
   event.stopPropagation();
 
-  const element = event.target as HTMLElement;
   const classes = Array.from(element.classList);
 
   if (classes.length === 0) {
@@ -278,8 +297,12 @@ function handleEscapeKey(event: KeyboardEvent) {
  * 显示类名选择对话框
  */
 function showClassSelector(classes: string[]) {
+  // 用于存储标签输入框的值
+  let labelInputValue = '';
+
   // 创建模态背景
   const modal = document.createElement('div');
+  modal.setAttribute('data-element-blocker-modal', 'true');
   modal.style.cssText = `
     position: fixed;
     top: 0;
@@ -292,6 +315,7 @@ function showClassSelector(classes: string[]) {
     justify-content: center;
     align-items: center;
     font-family: system-ui, -apple-system, sans-serif;
+    cursor: default;
   `;
 
   // 创建对话框
@@ -305,12 +329,54 @@ function showClassSelector(classes: string[]) {
     max-height: 80%;
     overflow-y: auto;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    cursor: default;
   `;
 
   // 标题
   const title = document.createElement('h3');
   title.textContent = '选择要屏蔽的类名';
   title.style.cssText = 'margin: 0 0 16px 0; color: #1f2937; font-size: 18px; font-weight: 600;';
+
+  // 标签输入区域
+  const labelSection = document.createElement('div');
+  labelSection.style.cssText = `
+    margin-bottom: 16px;
+    padding: 12px;
+    background-color: #fef3c7;
+    border-radius: 8px;
+    border: 1px solid #fcd34d;
+  `;
+
+  const labelTitle = document.createElement('div');
+  labelTitle.textContent = '🏷️ 添加标签（可选）';
+  labelTitle.style.cssText = 'font-size: 13px; font-weight: 500; color: #92400e; margin-bottom: 8px;';
+
+  const labelInput = document.createElement('input');
+  labelInput.type = 'text';
+  labelInput.placeholder = '如：评论区、广告横幅、侧边栏';
+  labelInput.style.cssText = `
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+  `;
+  labelInput.onfocus = () => (labelInput.style.borderColor = '#3b82f6');
+  labelInput.onblur = () => (labelInput.style.borderColor = '#d1d5db');
+  labelInput.oninput = () => {
+    labelInputValue = labelInput.value;
+  };
+
+  const labelHint = document.createElement('div');
+  labelHint.textContent = '标签可以帮助你记住这个屏蔽规则的用途';
+  labelHint.style.cssText = 'font-size: 11px; color: #92400e; margin-top: 6px;';
+
+  labelSection.appendChild(labelTitle);
+  labelSection.appendChild(labelInput);
+  labelSection.appendChild(labelHint);
 
   // 组合屏蔽区域
   const combineSection = document.createElement('div');
@@ -325,7 +391,7 @@ function showClassSelector(classes: string[]) {
   combineBtn.textContent = '屏蔽组合类名';
   combineBtn.style.cssText = `
     width: 100%;
-    background-color: #22c55e;
+    background-color: #81C995;
     color: white;
     border: none;
     padding: 10px 16px;
@@ -336,12 +402,12 @@ function showClassSelector(classes: string[]) {
     margin-bottom: 8px;
     transition: background-color 0.2s;
   `;
-  combineBtn.onmouseover = () => (combineBtn.style.backgroundColor = '#16a34a');
-  combineBtn.onmouseout = () => (combineBtn.style.backgroundColor = '#22c55e');
+  combineBtn.onmouseover = () => (combineBtn.style.backgroundColor = '#6bb582');
+  combineBtn.onmouseout = () => (combineBtn.style.backgroundColor = '#81C995');
 
   combineBtn.onclick = () => {
     const combinedClasses = classes.join(' ');
-    addBlockedClass(combinedClasses);
+    addBlockedClass(combinedClasses, labelInputValue);
     document.body.removeChild(modal);
     stopInspectingMode();
   };
@@ -396,7 +462,7 @@ function showClassSelector(classes: string[]) {
     addBtn.onmouseout = () => (addBtn.style.backgroundColor = '#ef4444');
 
     addBtn.onclick = () => {
-      addBlockedClass(className);
+      addBlockedClass(className, labelInputValue);
       document.body.removeChild(modal);
       stopInspectingMode();
     };
@@ -431,18 +497,22 @@ function showClassSelector(classes: string[]) {
 
   // 组装
   dialog.appendChild(title);
+  dialog.appendChild(labelSection);
   dialog.appendChild(combineSection);
   dialog.appendChild(singleTitle);
   dialog.appendChild(classList);
   dialog.appendChild(cancelBtn);
   modal.appendChild(dialog);
   document.body.appendChild(modal);
+
+  // 自动聚焦到标签输入框
+  setTimeout(() => labelInput.focus(), 100);
 }
 
 /**
- * 添加屏蔽类名
+ * 添加屏蔽类名（带可选标签）
  */
-async function addBlockedClass(className: string) {
+async function addBlockedClass(className: string, label?: string) {
   try {
     const data = await chrome.storage.local.get(['blockedClasses']);
     let classes: BlockedClass[] = normalizeBlockedClasses((data.blockedClasses as BlockedClass[]) || []);
@@ -451,11 +521,16 @@ async function addBlockedClass(className: string) {
     const isDuplicate = classes.some((item) => item.className === className && item.domain === currentDomain);
 
     if (!isDuplicate) {
-      classes.push({
+      const newItem: BlockedClass = {
         className,
         enabled: true,
         domain: currentDomain,
-      });
+      };
+      // 只有当 label 有实际值时才添加
+      if (label && label.trim()) {
+        newItem.label = label.trim();
+      }
+      classes.push(newItem);
 
       await chrome.storage.local.set({ blockedClasses: classes });
 

@@ -160,7 +160,7 @@ h3 {
 }
 
 .blocked-item.enabled .status-indicator {
-  color: #66b279;
+  color: #81C995;
 }
 
 .blocked-item.disabled .status-indicator {
@@ -205,13 +205,13 @@ h3 {
 }
 
 .toggle-btn.enabled {
-  border: 1px solid #66b279;
+  border: 1px solid #81C995;
   background-color: #fff;
-  color: #66b279;
+  color: #81C995;
 }
 
 .toggle-btn.enabled:hover {
-  background-color: #218838;
+  background-color: #81C995;
   color: #fff;
   transform: translateY(-1px);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);

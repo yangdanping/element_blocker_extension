@@ -1,6 +1,22 @@
-import { X, Globe, Monitor } from 'lucide-react';
+import { useState } from 'react';
+import { X, Globe, Monitor, Pencil } from 'lucide-react';
 import { useBlockerStore } from '@/stores/blocker.store';
-import { Button, Badge, Switch, Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
+import {
+  Button,
+  Badge,
+  Switch,
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  Input,
+} from '@/components/ui';
 import type { GroupedClasses, BlockedClass } from '@/lib/types';
 import type { MessageType } from '@/hooks';
 
@@ -17,7 +33,14 @@ interface BlockedClassListProps {
 export function BlockedClassList({ groupedClasses, currentDomain, onMessage }: BlockedClassListProps) {
   const removeClass = useBlockerStore((state) => state.removeClass);
   const toggleClass = useBlockerStore((state) => state.toggleClass);
+  const updateClass = useBlockerStore((state) => state.updateClass);
   const blockedClasses = useBlockerStore((state) => state.blockedClasses);
+
+  // 编辑对话框状态
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState<BlockedClass | null>(null);
+  const [editLabel, setEditLabel] = useState('');
+  const [editClassName, setEditClassName] = useState('');
 
   // 如果没有任何屏蔽项
   if (blockedClasses.length === 0) {
@@ -47,6 +70,49 @@ export function BlockedClassList({ groupedClasses, currentDomain, onMessage }: B
   };
 
   /**
+   * 打开编辑对话框
+   */
+  const handleOpenEdit = (item: BlockedClass, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setEditingItem(item);
+    setEditLabel(item.label || '');
+    setEditClassName(item.className);
+    setEditDialogOpen(true);
+  };
+
+  /**
+   * 保存编辑
+   */
+  const handleSaveEdit = () => {
+    if (!editingItem) return;
+
+    const cleanClassName = editClassName.trim().replace(/^\.+/g, '').replace(/\s+/g, ' ').trim();
+
+    if (!cleanClassName) {
+      onMessage('类名不能为空', 'error');
+      return;
+    }
+
+    // 检查新类名是否与其他项重复（排除当前编辑项）
+    const isDuplicate = blockedClasses.some(
+      (existing) =>
+        existing.className === cleanClassName &&
+        existing.domain === editingItem.domain &&
+        !(existing.className === editingItem.className && existing.domain === editingItem.domain),
+    );
+
+    if (isDuplicate) {
+      onMessage('该类名已存在', 'error');
+      return;
+    }
+
+    updateClass(editingItem.className, editingItem.domain, cleanClassName, editLabel);
+    setEditDialogOpen(false);
+    setEditingItem(null);
+    onMessage('已保存', 'success');
+  };
+
+  /**
    * 渲染单个域名分组
    */
   const renderDomainGroup = (domain: string, items: BlockedClass[], isActive: boolean) => {
@@ -71,22 +137,33 @@ export function BlockedClassList({ groupedClasses, currentDomain, onMessage }: B
             {items.map((item) => (
               <div
                 key={`${item.className}-${item.domain}`}
-                className={`flex items-center justify-between p-2 rounded-md border ${item.enabled ? 'bg-background border-border' : 'bg-muted/50 border-muted'}`}
+                className={`flex flex-col p-2 rounded-md border ${item.enabled ? 'bg-background border-border' : 'bg-muted/50 border-muted'}`}
               >
-                <div className="flex items-center gap-2 flex-1 min-w-0">
-                  <Switch checked={item.enabled} onCheckedChange={() => handleToggle(item)} className="scale-75" />
-                  <span className={`font-mono text-xs truncate ${item.enabled ? 'text-foreground' : 'text-muted-foreground line-through'}`} title={`.${item.className}`}>
-                    .{item.className}
-                  </span>
-                  {item.className.includes(' ') && (
-                    <Badge variant="outline" className="text-[10px] px-1 py-0">
-                      组合
-                    </Badge>
-                  )}
+                {/* 标签行（作为 header） */}
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className={`text-xs font-medium ${item.enabled ? 'text-foreground' : 'text-muted-foreground'}`}>{item.label || '未命名'}</span>
+                  <Button variant="ghost" size="icon" className="h-5 w-5 text-muted-foreground hover:text-foreground" onClick={(e) => handleOpenEdit(item, e)} title="编辑">
+                    <Pencil className="h-3 w-3" />
+                  </Button>
                 </div>
-                <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground hover:text-destructive" onClick={() => handleRemove(item)}>
-                  <X className="h-3 w-3" />
-                </Button>
+
+                {/* 类名和控制行 */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 flex-1 min-w-0">
+                    <Switch checked={item.enabled} onCheckedChange={() => handleToggle(item)} className="scale-75" />
+                    <span className={`font-mono text-xs truncate ${item.enabled ? 'text-foreground' : 'text-muted-foreground line-through'}`} title={`.${item.className}`}>
+                      .{item.className}
+                    </span>
+                    {item.className.includes(' ') && (
+                      <Badge variant="outline" className="text-[10px] px-1 py-0 whitespace-nowrap">
+                        组合
+                      </Badge>
+                    )}
+                  </div>
+                  <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground hover:text-destructive" onClick={() => handleRemove(item)}>
+                    <X className="h-3 w-3" />
+                  </Button>
+                </div>
               </div>
             ))}
           </div>
@@ -105,11 +182,45 @@ export function BlockedClassList({ groupedClasses, currentDomain, onMessage }: B
   });
 
   return (
-    <div>
-      {sortedDomains.map((domain) => {
-        const isActive = domain === currentDomain || domain === 'global';
-        return renderDomainGroup(domain, groupedClasses[domain], isActive);
-      })}
-    </div>
+    <>
+      <div>
+        {sortedDomains.map((domain) => {
+          const isActive = domain === currentDomain || domain === 'global';
+          return renderDomainGroup(domain, groupedClasses[domain], isActive);
+        })}
+      </div>
+
+      {/* 编辑对话框 */}
+      <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+        <DialogContent className="sm:max-w-[350px]">
+          <DialogHeader>
+            <DialogTitle>编辑屏蔽规则</DialogTitle>
+            <DialogDescription>修改标签名称或类名</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">标签</label>
+              <Input value={editLabel} onChange={(e) => setEditLabel(e.target.value)} placeholder="如：评论区、广告横幅" onKeyDown={(e) => e.key === 'Enter' && handleSaveEdit()} />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">类名</label>
+              <Input
+                value={editClassName}
+                onChange={(e) => setEditClassName(e.target.value)}
+                placeholder="如：ad-banner"
+                className="font-mono text-sm"
+                onKeyDown={(e) => e.key === 'Enter' && handleSaveEdit()}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditDialogOpen(false)}>
+              取消
+            </Button>
+            <Button onClick={handleSaveEdit}>保存</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

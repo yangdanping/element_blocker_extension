@@ -343,7 +343,7 @@ class ElementBlockerContent {
     selectAllBtn.textContent = '屏蔽组合类名';
     selectAllBtn.style.cssText = `
       width: 100%;
-      background-color: #66b279;
+      background-color: #81C995;
       color: white;
       border: none;
       padding: 8px 12px;
