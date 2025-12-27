@@ -1,6 +1,14 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
+/* 自定义字体 */
+@font-face {
+  font-family: 'MapleMono';
+  src: url('/public/fonts/MapleMono-Italic[wght].ttf') format('truetype');
+  font-weight: normal;
+  font-style: italic;
+}
+
 /* 自定义暗色模式变体 */
 @custom-variant dark (&:is(.dark *));
 

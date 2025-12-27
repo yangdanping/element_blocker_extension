@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Settings, Crosshair, Moon, Sun, Power } from 'lucide-react';
+import { Settings, Crosshair, Moon, Sun, Cuboid } from 'lucide-react';
 import { useBlockerStore, useGroupedClasses } from '@/stores/blocker.store';
 import { useMessage, useChromeMessage } from '@/hooks';
 import { Button, Switch, Badge, Card, CardHeader, CardTitle } from '@/components/ui';
@@ -132,8 +132,8 @@ export default function App() {
       <Card className="rounded-none border-x-0 border-t-0 flex-shrink-0">
         <CardHeader className="p-4 pb-2">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-base flex items-center gap-2">
-              <Power className="h-4 w-4" />
+            <CardTitle className="text-base flex items-center gap-2 font-['MapleMono'] italic">
+              <Cuboid className="h-5 w-5" />
               Element Blocker
             </CardTitle>
             <div className="flex items-center gap-2">
