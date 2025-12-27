@@ -42,6 +42,10 @@ export function BlockedClassList({ groupedClasses, currentDomain, onMessage }: B
   const [editLabel, setEditLabel] = useState('');
   const [editClassName, setEditClassName] = useState('');
 
+  // 删除确认对话框状态
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deletingItem, setDeletingItem] = useState<BlockedClass | null>(null);
+
   // 如果没有任何屏蔽项
   if (blockedClasses.length === 0) {
     return (
@@ -54,10 +58,21 @@ export function BlockedClassList({ groupedClasses, currentDomain, onMessage }: B
   }
 
   /**
-   * 处理删除
+   * 打开删除确认对话框
    */
   const handleRemove = (item: BlockedClass) => {
-    removeClass(item.className, item.domain);
+    setDeletingItem(item);
+    setDeleteDialogOpen(true);
+  };
+
+  /**
+   * 确认删除
+   */
+  const handleConfirmDelete = () => {
+    if (!deletingItem) return;
+    removeClass(deletingItem.className, deletingItem.domain);
+    setDeleteDialogOpen(false);
+    setDeletingItem(null);
     onMessage('已删除', 'success');
   };
 
@@ -154,15 +169,17 @@ export function BlockedClassList({ groupedClasses, currentDomain, onMessage }: B
                     <span className={`font-mono text-xs truncate ${item.enabled ? 'text-foreground' : 'text-muted-foreground line-through'}`} title={`.${item.className}`}>
                       .{item.className}
                     </span>
+                  </div>
+                  <div className="flex items-center">
                     {item.className.includes(' ') && (
                       <Badge variant="outline" className="text-[10px] px-1 py-0 whitespace-nowrap">
                         组合
                       </Badge>
                     )}
+                    <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground hover:text-destructive" onClick={() => handleRemove(item)}>
+                      <X className="h-3 w-3" />
+                    </Button>
                   </div>
-                  <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground hover:text-destructive" onClick={() => handleRemove(item)}>
-                    <X className="h-3 w-3" />
-                  </Button>
                 </div>
               </div>
             ))}
@@ -192,7 +209,7 @@ export function BlockedClassList({ groupedClasses, currentDomain, onMessage }: B
 
       {/* 编辑对话框 */}
       <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
-        <DialogContent className="sm:max-w-[350px]">
+        <DialogContent className="sm:max-w-[350px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>编辑屏蔽规则</DialogTitle>
             <DialogDescription>修改标签名称或类名</DialogDescription>
@@ -218,6 +235,32 @@ export function BlockedClassList({ groupedClasses, currentDomain, onMessage }: B
               取消
             </Button>
             <Button onClick={handleSaveEdit}>保存</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* 删除确认对话框 */}
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogContent className="sm:max-w-[350px] max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>确认删除</DialogTitle>
+            <DialogDescription>确定要删除这个屏蔽规则吗？此操作无法撤销。</DialogDescription>
+          </DialogHeader>
+          {deletingItem && (
+            <div className="py-4">
+              <div className="p-3 rounded-md bg-muted">
+                <div className="text-sm font-medium mb-1">{deletingItem.label || '未命名'}</div>
+                <div className="font-mono text-xs text-muted-foreground">.{deletingItem.className}</div>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>
+              取消
+            </Button>
+            <Button variant="destructive" onClick={handleConfirmDelete}>
+              删除
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

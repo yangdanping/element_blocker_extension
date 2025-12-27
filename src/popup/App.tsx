@@ -129,7 +129,7 @@ export default function App() {
   return (
     <div className="popup-container bg-background text-foreground">
       {/* 头部 */}
-      <Card className="rounded-none border-x-0 border-t-0">
+      <Card className="rounded-none border-x-0 border-t-0 flex-shrink-0">
         <CardHeader className="p-4 pb-2">
           <div className="flex items-center justify-between">
             <CardTitle className="text-base flex items-center gap-2">
@@ -162,7 +162,7 @@ export default function App() {
       </Card>
 
       {/* 添加表单 & 选择按钮 */}
-      <div className="p-4 border-b">
+      <div className="p-4 border-b flex-shrink-0">
         <div className="flex gap-2">
           <AddClassForm onMessage={showMessage} />
           <div className="flex items-start pt-0">

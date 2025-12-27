@@ -144,8 +144,11 @@
 /* Popup 和 Options 页面尺寸 */
 .popup-container {
   width: 360px;
-  min-height: 400px;
+  height: 600px;
   max-height: 600px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .options-container {
