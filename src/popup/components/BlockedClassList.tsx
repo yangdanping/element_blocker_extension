@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { X, Globe, Monitor, Pencil } from 'lucide-react';
+import { useState, useMemo } from 'react';
+import { X, Globe, Monitor, Pencil, Search } from 'lucide-react';
 import { useBlockerStore } from '@/stores/blocker.store';
 import {
   Button,
@@ -45,6 +45,40 @@ export function BlockedClassList({ groupedClasses, currentDomain, onMessage }: B
   // 删除确认对话框状态
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deletingItem, setDeletingItem] = useState<BlockedClass | null>(null);
+
+  // 搜索状态
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // 根据搜索条件过滤分组数据
+  const filteredGroupedClasses = useMemo(() => {
+    if (!searchQuery.trim()) {
+      return groupedClasses;
+    }
+
+    const query = searchQuery.toLowerCase();
+    const filtered: GroupedClasses = {};
+
+    Object.entries(groupedClasses).forEach(([domain, items]) => {
+      // 检查域名是否匹配
+      const domainMatch = domain.toLowerCase().includes(query);
+
+      const matchedItems = items.filter((item) => {
+        // 搜索标签、类名和域名
+        const labelMatch = item.label?.toLowerCase().includes(query);
+        const classNameMatch = item.className.toLowerCase().includes(query);
+        return domainMatch || labelMatch || classNameMatch;
+      });
+
+      if (matchedItems.length > 0) {
+        filtered[domain] = matchedItems;
+      }
+    });
+
+    return filtered;
+  }, [groupedClasses, searchQuery]);
+
+  // 判断是否显示搜索框
+  const shouldShowSearch = blockedClasses.length > 5;
 
   // 如果没有任何屏蔽项
   if (blockedClasses.length === 0) {
@@ -190,7 +224,7 @@ export function BlockedClassList({ groupedClasses, currentDomain, onMessage }: B
   };
 
   // 按优先级排序显示：当前域名 > 全局 > 其他域名
-  const sortedDomains = Object.keys(groupedClasses).sort((a, b) => {
+  const sortedDomains = Object.keys(filteredGroupedClasses).sort((a, b) => {
     if (a === currentDomain) return -1;
     if (b === currentDomain) return 1;
     if (a === 'global') return -1;
@@ -201,10 +235,35 @@ export function BlockedClassList({ groupedClasses, currentDomain, onMessage }: B
   return (
     <>
       <div>
-        {sortedDomains.map((domain) => {
-          const isActive = domain === currentDomain || domain === 'global';
-          return renderDomainGroup(domain, groupedClasses[domain], isActive);
-        })}
+        {/* 搜索框 - 仅当屏蔽项大于5个时显示 */}
+        {shouldShowSearch && (
+          <div className="mb-3">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input type="text" placeholder="搜索域名、标签或类名..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-9 pr-8 text-sm" />
+              {searchQuery && (
+                <Button variant="ghost" size="icon" className="absolute right-1 top-1/2 -translate-y-1/2 h-6 w-6" onClick={() => setSearchQuery('')} title="清除搜索">
+                  <X className="h-3 w-3" />
+                </Button>
+              )}
+            </div>
+            {searchQuery && <div className="mt-2 text-xs text-muted-foreground">找到 {Object.values(filteredGroupedClasses).flat().length} 个匹配项</div>}
+          </div>
+        )}
+
+        {/* 屏蔽项列表 */}
+        {sortedDomains.length > 0 ? (
+          sortedDomains.map((domain) => {
+            const isActive = domain === currentDomain || domain === 'global';
+            return renderDomainGroup(domain, filteredGroupedClasses[domain], isActive);
+          })
+        ) : (
+          <div className="flex flex-col items-center justify-center py-8 text-muted-foreground">
+            <Search className="h-12 w-12 mb-2 opacity-50" />
+            <p className="text-sm">未找到匹配的屏蔽项</p>
+            <p className="text-xs mt-1">尝试其他搜索关键词</p>
+          </div>
+        )}
       </div>
 
       {/* 编辑对话框 */}
@@ -214,7 +273,7 @@ export function BlockedClassList({ groupedClasses, currentDomain, onMessage }: B
             <DialogTitle>编辑屏蔽规则</DialogTitle>
             <DialogDescription>修改标签名称或类名</DialogDescription>
           </DialogHeader>
-          <div className="space-y-4 py-4">
+          <div className="space-y-2 py-2">
             <div className="space-y-2">
               <label className="text-sm font-medium">标签</label>
               <Input value={editLabel} onChange={(e) => setEditLabel(e.target.value)} placeholder="如：评论区、广告横幅" onKeyDown={(e) => e.key === 'Enter' && handleSaveEdit()} />
