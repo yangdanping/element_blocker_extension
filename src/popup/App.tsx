@@ -149,29 +149,33 @@ export default function App() {
           </div>
 
           {/* 当前域名 & 当前域名开关 */}
-          <div className="flex items-center justify-between mt-2">
-            <Badge variant="outline" className="text-xs font-mono" style={{ borderColor: '#81C995' }}>
-              {currentDomain || '未知域名'}
-            </Badge>
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-muted-foreground">{getCurrentDomainStatus()}</span>
-              <Switch checked={getCurrentDomainEnabled()} onCheckedChange={toggleCurrentDomainEnabled} />
+          {currentDomain !== chrome.runtime.id && (
+            <div className="flex items-center justify-between mt-2">
+              <Badge variant="outline" className="text-xs font-mono" style={{ borderColor: '#81C995' }}>
+                {currentDomain || '未知域名'}
+              </Badge>
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-muted-foreground">{getCurrentDomainStatus()}</span>
+                <Switch checked={getCurrentDomainEnabled()} onCheckedChange={toggleCurrentDomainEnabled} />
+              </div>
             </div>
-          </div>
+          )}
         </CardHeader>
       </Card>
 
       {/* 添加表单 & 选择按钮 */}
-      <div className="p-4 border-b flex-shrink-0">
-        <div className="flex gap-2">
-          <AddClassForm onMessage={showMessage} />
-          <div className="flex items-start pt-0">
-            <Button variant="outline" size="icon" onClick={handleStartInspecting} title="选择页面元素" className="h-9 w-9">
-              <Crosshair className="h-4 w-4" />
-            </Button>
+      {currentDomain !== chrome.runtime.id && (
+        <div className="p-4 border-b flex-shrink-0">
+          <div className="flex gap-2">
+            <AddClassForm onMessage={showMessage} />
+            <div className="flex items-start pt-0">
+              <Button variant="outline" size="icon" onClick={handleStartInspecting} title="选择页面元素" className="h-9 w-9">
+                <Crosshair className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* 屏蔽列表 */}
       <div className="flex-1 overflow-y-auto p-4">

@@ -184,12 +184,40 @@ export default function App() {
           <p className="text-muted-foreground mt-1">管理扩展的快捷键、主题和配置</p>
         </div>
 
-        <Tabs defaultValue="general" className="space-y-6">
+        <Tabs defaultValue="data" className="space-y-6">
           <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="general">常规</TabsTrigger>
-            <TabsTrigger value="shortcuts">快捷键</TabsTrigger>
-            <TabsTrigger value="data">数据管理</TabsTrigger>
+            <TabsTrigger value="data" className="cursor-pointer">
+              数据管理
+            </TabsTrigger>
+            <TabsTrigger value="general" className="cursor-pointer">
+              常规
+            </TabsTrigger>
+            <TabsTrigger value="shortcuts" className="cursor-pointer">
+              快捷键
+            </TabsTrigger>
           </TabsList>
+          {/* 数据管理 */}
+          <TabsContent value="data">
+            <Card>
+              <CardHeader>
+                <CardTitle>配置管理</CardTitle>
+                <CardDescription>导入或导出你的屏蔽规则配置，当前共 {blockedClasses.length} 条规则</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <Button onClick={handleExport} variant="outline" className="h-20 flex-col">
+                    <Download className="h-6 w-6 mb-2" />
+                    导出配置
+                  </Button>
+                  <Button onClick={handleImportClick} variant="outline" className="h-20 flex-col">
+                    <Upload className="h-6 w-6 mb-2" />
+                    导入配置
+                  </Button>
+                </div>
+                <input ref={fileInputRef} type="file" accept=".json" onChange={handleFileChange} className="hidden" />
+              </CardContent>
+            </Card>
+          </TabsContent>
 
           {/* 常规设置 */}
           <TabsContent value="general">
@@ -244,29 +272,6 @@ export default function App() {
               </CardContent>
             </Card>
           </TabsContent>
-
-          {/* 数据管理 */}
-          <TabsContent value="data">
-            <Card>
-              <CardHeader>
-                <CardTitle>配置管理</CardTitle>
-                <CardDescription>导入或导出你的屏蔽规则配置，当前共 {blockedClasses.length} 条规则</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <Button onClick={handleExport} variant="outline" className="h-20 flex-col">
-                    <Download className="h-6 w-6 mb-2" />
-                    导出配置
-                  </Button>
-                  <Button onClick={handleImportClick} variant="outline" className="h-20 flex-col">
-                    <Upload className="h-6 w-6 mb-2" />
-                    导入配置
-                  </Button>
-                </div>
-                <input ref={fileInputRef} type="file" accept=".json" onChange={handleFileChange} className="hidden" />
-              </CardContent>
-            </Card>
-          </TabsContent>
         </Tabs>
 
         {/* 消息提示 */}
@@ -276,8 +281,8 @@ export default function App() {
               message.type === 'success'
                 ? 'bg-success text-success-foreground'
                 : message.type === 'error'
-                  ? 'bg-destructive text-destructive-foreground'
-                  : 'bg-muted text-muted-foreground'
+                ? 'bg-destructive text-destructive-foreground'
+                : 'bg-muted text-muted-foreground'
             }`}
           >
             {message.type === 'success' ? <CheckCircle className="h-4 w-4" /> : message.type === 'error' ? <AlertCircle className="h-4 w-4" /> : null}
