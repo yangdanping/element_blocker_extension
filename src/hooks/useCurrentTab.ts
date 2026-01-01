@@ -1,20 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getDomainFromUrl } from '@/lib/utils';
-
-/**
- * 标签页信息
- */
-interface TabInfo {
-  /** 标签页 ID */
-  id?: number;
-  /** 完整 URL */
-  url?: string;
-  /** 提取的域名 */
-  domain: string | null;
-  /** 标签页标题 */
-  title?: string;
-}
-
+import type { TabInfo } from './types';
 /**
  * 当前标签页信息 Hook
  *

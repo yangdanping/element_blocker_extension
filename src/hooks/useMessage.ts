@@ -1,25 +1,7 @@
 import { useState, useCallback } from 'react';
+import type { Message, MessageType, UseMessageOptions } from './types';
 
-/**
- * 消息类型
- */
-export type MessageType = 'success' | 'error' | 'info' | 'warning';
-
-/**
- * 消息对象
- */
-export interface Message {
-  text: string;
-  type: MessageType;
-}
-
-/**
- * useMessage Hook 配置
- */
-interface UseMessageOptions {
-  /** 消息显示时长（毫秒），默认 2000 */
-  duration?: number;
-}
+export type { Message, MessageType } from './types';
 
 /**
  * 消息提示 Hook

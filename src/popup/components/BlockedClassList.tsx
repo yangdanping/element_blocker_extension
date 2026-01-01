@@ -18,13 +18,7 @@ import {
   Input,
 } from '@/components/ui';
 import type { GroupedClasses, BlockedClass } from '@/lib/types';
-import type { MessageType } from '@/hooks';
-
-interface BlockedClassListProps {
-  groupedClasses: GroupedClasses;
-  currentDomain: string | null;
-  onMessage: (text: string, type?: MessageType) => void;
-}
+import type { BlockedClassListProps } from './types';
 
 /**
  * 屏蔽类名列表组件

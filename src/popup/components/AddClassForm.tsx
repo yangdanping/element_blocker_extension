@@ -2,11 +2,7 @@ import { useState, type FormEvent } from 'react';
 import { Plus, Tag } from 'lucide-react';
 import { useBlockerStore } from '@/stores/blocker.store';
 import { Button, Input } from '@/components/ui';
-import type { MessageType } from '@/hooks';
-
-interface AddClassFormProps {
-  onMessage: (text: string, type?: MessageType) => void;
-}
+import type { AddClassFormProps } from './types';
 
 /**
  * 添加屏蔽类名的表单组件

@@ -1,14 +1,6 @@
 import { useCallback } from 'react';
 import type { Message } from '@/lib/types';
-
-/**
- * Chrome 消息发送结果
- */
-interface SendMessageResult {
-  success: boolean;
-  response?: any;
-  error?: string;
-}
+import type { SendMessageResult } from './types';
 
 /**
  * Chrome 消息通信 Hook
