@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { X, Globe, Monitor, Pencil, Search } from 'lucide-react';
+import { X, Globe, Monitor, Pencil, Search, ExternalLink } from 'lucide-react';
 import { useBlockerStore } from '@/stores/blocker.store';
 import {
   Button,
@@ -167,8 +167,27 @@ export function BlockedClassList({ groupedClasses, currentDomain, onMessage }: B
         <CardHeader className="p-3 pb-2">
           <div className="flex items-center justify-between">
             <CardTitle className="text-sm flex items-center gap-2">
-              {isGlobal ? <Globe className="h-3.5 w-3.5 text-muted-foreground" /> : <Monitor className="h-3.5 w-3.5 text-muted-foreground" />}
-              <span className="font-mono text-xs">{displayName}</span>
+              {isGlobal ? (
+                <>
+                  <Globe className="h-3.5 w-3.5 text-muted-foreground" />
+                  <span className="font-mono text-xs">{displayName}</span>
+                </>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <Monitor className="h-3.5 w-3.5 text-muted-foreground" />
+                  <a
+                    href={`https://${domain}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-mono text-xs hover:underline hover:text-primary cursor-pointer flex items-center gap-1 transition-colors"
+                    title={`访问 ${domain}`}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {displayName}
+                    <ExternalLink className="h-3 w-3 opacity-50" />
+                  </a>
+                </div>
+              )}
             </CardTitle>
             <Badge variant={isActive ? 'default' : 'secondary'} className="text-xs">
               {items.length}
