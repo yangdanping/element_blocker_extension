@@ -123,11 +123,22 @@ export default function App() {
         throw new Error('无效的配置文件格式');
       }
 
-      setImportData({
+      const newData = {
         blockedClasses: data.config.blockedClasses || [],
         isEnabled: data.config.isEnabled !== false,
-      });
-      setImportDialogOpen(true);
+      };
+
+      if (blockedClasses.length === 0) {
+        // 初始导入，直接应用
+        setBlockedClasses(newData.blockedClasses);
+        setEnabled(newData.isEnabled);
+        await saveToStorage();
+        showMessage(`已导入 ${newData.blockedClasses.length} 条规则`, 'success');
+      } else {
+        // 已有数据，显示确认弹窗
+        setImportData(newData);
+        setImportDialogOpen(true);
+      }
     } catch (err) {
       showMessage('文件格式错误', 'error');
     }
@@ -300,16 +311,24 @@ export default function App() {
             <div className="py-4">
               <p className="text-sm text-muted-foreground">当前已有 {blockedClasses.length} 条规则</p>
             </div>
-            <DialogFooter className="flex gap-2 sm:gap-0">
+            <DialogFooter className="flex gap-2">
               <Button variant="outline" onClick={() => setImportDialogOpen(false)}>
                 取消
               </Button>
-              <Button variant="secondary" onClick={handleImportMerge}>
-                合并配置
-              </Button>
-              <Button variant="destructive" onClick={handleImportReplace}>
-                覆盖配置
-              </Button>
+              {blockedClasses.length > 0 ? (
+                <>
+                  <Button variant="secondary" onClick={handleImportMerge}>
+                    合并配置
+                  </Button>
+                  <Button variant="destructive" onClick={handleImportReplace}>
+                    覆盖配置
+                  </Button>
+                </>
+              ) : (
+                <Button variant="success" onClick={handleImportReplace}>
+                  导入配置
+                </Button>
+              )}
             </DialogFooter>
           </DialogContent>
         </Dialog>
