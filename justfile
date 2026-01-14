@@ -55,10 +55,6 @@ release TAG NOTES='':
         else
             gh release create {{TAG}} element_blocker.zip --title "{{TAG}}" --notes "{{NOTES}}"
         fi
-        echo "🗑️  删除自动生成的源码压缩包..."
-        # 删除 GitHub 自动生成的源码压缩包
-        gh release delete-asset {{TAG}} "Source code (zip)" --yes 2>/dev/null || true
-        gh release delete-asset {{TAG}} "Source code (tar.gz)" --yes 2>/dev/null || true
         echo "✅ Release {{TAG}} 创建成功！"
     fi
     
