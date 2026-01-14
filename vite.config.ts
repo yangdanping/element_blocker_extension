@@ -8,6 +8,10 @@ import manifest from './src/manifest';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
+// 根据环境变量决定输出目录
+const isRelease = process.env.RELEASE === 'true';
+const outDir = isRelease ? resolve(__dirname, 'dist') : '/Users/yangdanping/Applications/Chrome Apps.localized/element_blocker';
+
 export default defineConfig({
   plugins: [react(), tailwindcss(), crx({ manifest })],
   resolve: {
@@ -24,7 +28,7 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: '/Users/yangdanping/Applications/Chrome Apps.localized/element_blocker',
+    outDir,
     rollupOptions: {
       input: {
         popup: resolve(__dirname, 'src/popup/index.html'),
