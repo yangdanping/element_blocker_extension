@@ -39,24 +39,29 @@ release TAG NOTES='':
     echo "🔨 开始构建发布版本..."
     RELEASE=true pnpm build
     echo "📦 打包扩展..."
-    cd dist && zip -r ../element-blocker-extension.zip . && cd ..
+    cd dist && zip -r ../element_blocker.zip . && cd ..
     
     # 检查 Release 是否存在
     if gh release view {{TAG}} &>/dev/null; then
         echo "🔄 Release {{TAG}} 已存在，更新中..."
         # Release 存在，删除旧的 assets 并上传新的
-        gh release upload {{TAG}} element-blocker-extension.zip --clobber
+        gh release upload {{TAG}} element_blocker.zip --clobber
         echo "✅ Release {{TAG}} 更新成功！"
     else
         echo "🚀 创建新的 GitHub Release..."
         # 如果没有提供 NOTES，使用默认值
         if [ -z "{{NOTES}}" ]; then
-            gh release create {{TAG}} element-blocker-extension.zip --title "{{TAG}}"
+            gh release create {{TAG}} element_blocker.zip --title "{{TAG}}"
         else
-            gh release create {{TAG}} element-blocker-extension.zip --title "{{TAG}}" --notes "{{NOTES}}"
+            gh release create {{TAG}} element_blocker.zip --title "{{TAG}}" --notes "{{NOTES}}"
         fi
+        echo "🗑️  删除自动生成的源码压缩包..."
+        # 删除 GitHub 自动生成的源码压缩包
+        gh release delete-asset {{TAG}} "Source code (zip)" --yes 2>/dev/null || true
+        gh release delete-asset {{TAG}} "Source code (tar.gz)" --yes 2>/dev/null || true
         echo "✅ Release {{TAG}} 创建成功！"
     fi
     
-    rm -f element-blocker-extension.zip
+    rm -f element_blocker.zip
+    rm -rf dist
     echo "🧹 清理临时文件完成"
