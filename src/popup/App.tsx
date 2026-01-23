@@ -129,7 +129,7 @@ export default function App() {
   return (
     <div className="popup-container bg-background text-foreground">
       {/* 头部 */}
-      <Card className="rounded-none border-x-0 border-t-0 flex-shrink-0">
+      <Card className="rounded-none border-x-0 border-t-0 shrink-0">
         <CardHeader className="p-4 pb-2">
           <div className="flex items-center justify-between">
             <CardTitle className="text-base flex items-center gap-2 font-['MapleMono'] italic">
@@ -165,15 +165,8 @@ export default function App() {
 
       {/* 添加表单 & 选择按钮 */}
       {currentDomain !== chrome.runtime.id && (
-        <div className="p-4 border-b flex-shrink-0">
-          <div className="flex gap-2">
-            <AddClassForm onMessage={showMessage} />
-            <div className="flex items-start pt-0">
-              <Button variant="outline" size="icon" onClick={handleStartInspecting} title="选择页面元素" className="h-9 w-9">
-                <Crosshair className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
+        <div className="p-4 border-b shrink-0">
+          <AddClassForm onMessage={showMessage} onInspect={handleStartInspecting} />
         </div>
       )}
 

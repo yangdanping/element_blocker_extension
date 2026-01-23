@@ -6,6 +6,7 @@ import type { GroupedClasses } from '@/lib/types';
  */
 export interface AddClassFormProps {
   onMessage: (text: string, type?: MessageType) => void;
+  onInspect?: () => void;
 }
 
 /**

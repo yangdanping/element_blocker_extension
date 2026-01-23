@@ -84,7 +84,7 @@ export default function App() {
   /** 导出配置 */
   const handleExport = () => {
     const exportData = {
-      version: '2.0',
+      version: '2.1', // 升级版本号以支持 ID 选择器
       exportDate: new Date().toISOString(),
       config: {
         blockedClasses,

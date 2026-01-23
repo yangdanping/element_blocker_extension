@@ -19,6 +19,7 @@ import {
 } from '@/components/ui';
 import type { GroupedClasses, BlockedClass } from '@/lib/types';
 import type { BlockedClassListProps } from './types';
+import { formatDisplaySelector, parseSelectorString } from '@/lib/utils';
 
 /**
  * 屏蔽类名列表组件
@@ -35,6 +36,7 @@ export function BlockedClassList({ groupedClasses, currentDomain, onMessage }: B
   const [editingItem, setEditingItem] = useState<BlockedClass | null>(null);
   const [editLabel, setEditLabel] = useState('');
   const [editClassName, setEditClassName] = useState('');
+  const [editId, setEditId] = useState('');
 
   // 删除确认对话框状态
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -117,9 +119,12 @@ export function BlockedClassList({ groupedClasses, currentDomain, onMessage }: B
    */
   const handleOpenEdit = (item: BlockedClass, e: React.MouseEvent) => {
     e.stopPropagation();
+    const { id, classes } = parseSelectorString(item.className);
+    
     setEditingItem(item);
     setEditLabel(item.label || '');
-    setEditClassName(item.className);
+    setEditClassName(classes.join(' ')); // 类名用空格连接回显
+    setEditId(id || '');
     setEditDialogOpen(true);
   };
 
@@ -129,27 +134,42 @@ export function BlockedClassList({ groupedClasses, currentDomain, onMessage }: B
   const handleSaveEdit = () => {
     if (!editingItem) return;
 
-    const cleanClassName = editClassName.trim().replace(/^\.+/g, '').replace(/\s+/g, ' ').trim();
+    const cleanClassName = editClassName
+      .trim()
+      .replace(/^\.+/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+    
+    const cleanId = editId
+      .trim()
+      .replace(/^#+/g, '')
+      .trim();
 
-    if (!cleanClassName) {
-      onMessage('类名不能为空', 'error');
+    if (!cleanClassName && !cleanId) {
+      onMessage('类名或 ID 不能为空', 'error');
       return;
+    }
+
+    // 重建规则字符串
+    let newRuleString = cleanClassName;
+    if (cleanId) {
+      newRuleString = newRuleString ? `${newRuleString} #${cleanId}` : `#${cleanId}`;
     }
 
     // 检查新类名是否与其他项重复（排除当前编辑项）
     const isDuplicate = blockedClasses.some(
       (existing) =>
-        existing.className === cleanClassName &&
+        existing.className === newRuleString &&
         existing.domain === editingItem.domain &&
         !(existing.className === editingItem.className && existing.domain === editingItem.domain),
     );
 
     if (isDuplicate) {
-      onMessage('该类名已存在', 'error');
+      onMessage('该规则已存在', 'error');
       return;
     }
 
-    updateClass(editingItem.className, editingItem.domain, cleanClassName, editLabel);
+    updateClass(editingItem.className, editingItem.domain, newRuleString, editLabel);
     setEditDialogOpen(false);
     setEditingItem(null);
     onMessage('已保存', 'success');
@@ -213,13 +233,21 @@ export function BlockedClassList({ groupedClasses, currentDomain, onMessage }: B
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2 flex-1 min-w-0">
                     <Switch checked={item.enabled} onCheckedChange={() => handleToggle(item)} className="scale-75" />
-                    <span className={`font-mono text-xs truncate ${item.enabled ? 'text-foreground' : 'text-muted-foreground line-through'}`} title={`.${item.className}`}>
-                      .{item.className}
+                    <span 
+                      className={`font-mono text-xs truncate ${item.enabled ? 'text-foreground' : 'text-muted-foreground line-through'}`} 
+                      title={formatDisplaySelector(item.className)}
+                    >
+                      {formatDisplaySelector(item.className)}
                     </span>
                   </div>
                   <div className="flex items-center">
-                    {item.className.includes(' ') && (
-                      <Badge variant="outline" className="text-[10px] px-1 py-0 whitespace-nowrap">
+                    {/* 显示规则类型 Badge */}
+                    {item.className.includes('#') ? (
+                       <Badge variant="outline" className="text-[10px] px-1 py-0 whitespace-nowrap ml-1">
+                         ID
+                       </Badge>
+                    ) : item.className.includes(' ') && (
+                      <Badge variant="outline" className="text-[10px] px-1 py-0 whitespace-nowrap ml-1">
                         组合
                       </Badge>
                     )}
@@ -284,7 +312,7 @@ export function BlockedClassList({ groupedClasses, currentDomain, onMessage }: B
         <DialogContent className="sm:max-w-[350px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>编辑屏蔽规则</DialogTitle>
-            <DialogDescription>修改标签名称或类名</DialogDescription>
+            <DialogDescription>修改标签名称、类名或 ID</DialogDescription>
           </DialogHeader>
           <div className="space-y-2 py-2">
             <div className="space-y-2">
@@ -297,6 +325,16 @@ export function BlockedClassList({ groupedClasses, currentDomain, onMessage }: B
                 value={editClassName}
                 onChange={(e) => setEditClassName(e.target.value)}
                 placeholder="如：ad-banner"
+                className="font-mono text-sm"
+                onKeyDown={(e) => e.key === 'Enter' && handleSaveEdit()}
+              />
+            </div>
+             <div className="space-y-2">
+              <label className="text-sm font-medium">ID</label>
+              <Input
+                value={editId}
+                onChange={(e) => setEditId(e.target.value)}
+                placeholder="如：sidebar-id (不带 #)"
                 className="font-mono text-sm"
                 onKeyDown={(e) => e.key === 'Enter' && handleSaveEdit()}
               />
@@ -322,7 +360,7 @@ export function BlockedClassList({ groupedClasses, currentDomain, onMessage }: B
             <div className="py-4">
               <div className="p-3 rounded-md bg-muted">
                 <div className="text-sm font-medium mb-1">{deletingItem.label || '未命名'}</div>
-                <div className="font-mono text-xs text-muted-foreground">.{deletingItem.className}</div>
+                <div className="font-mono text-xs text-muted-foreground">{formatDisplaySelector(deletingItem.className)}</div>
               </div>
             </div>
           )}
