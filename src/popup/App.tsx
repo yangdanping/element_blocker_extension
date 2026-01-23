@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Settings, Crosshair, Moon, Sun, Cuboid } from 'lucide-react';
+import { Settings, Moon, Sun, Cuboid } from 'lucide-react';
 import { useBlockerStore, useGroupedClasses } from '@/stores/blocker.store';
 import { useMessage, useChromeMessage } from '@/hooks';
 import { Button, Switch, Badge, Card, CardHeader, CardTitle } from '@/components/ui';
