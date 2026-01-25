@@ -30,38 +30,6 @@ preview:
 update-prettier:
 	pnpm update:prettier
 
-# 创建或更新 GitHub Release 并上传打包文件
-# 用法: just release v2.0.0 [可选: "Release notes"]
-# 如果 Release 已存在，会先删除旧的 assets 然后上传新的
-release TAG NOTES='':
-	#!/usr/bin/env bash
-	set -e
-	echo "🔨 开始构建发布版本..."
-	RELEASE=true pnpm build
-	echo "📦 打包扩展..."
-	cd dist && zip -r ../element_blocker.zip . && cd ..
-	
-	# 检查 Release 是否存在
-	if gh release view {{TAG}} &>/dev/null; then
-		echo "🔄 Release {{TAG}} 已存在，更新中..."
-		# Release 存在，删除旧的 assets 并上传新的
-		gh release upload {{TAG}} element_blocker.zip --clobber
-		echo "✅ Release {{TAG}} 更新成功！"
-	else
-		echo "🚀 创建新的 GitHub Release..."
-		# 如果没有提供 NOTES，使用默认值
-		if [ -z "{{NOTES}}" ]; then
-			gh release create {{TAG}} element_blocker.zip --title "{{TAG}}"
-		else
-			gh release create {{TAG}} element_blocker.zip --title "{{TAG}}" --notes "{{NOTES}}"
-		fi
-		echo "✅ Release {{TAG}} 创建成功！"
-	fi
-	
-	rm -f element_blocker.zip
-	rm -rf dist
-	echo "🧹 清理临时文件完成"
-
 # 将 dev 分支合并到 main 并推送
 merge-dev-to-main:
 	git switch main
@@ -115,3 +83,36 @@ retag tag_name:
 	git push origin {{tag_name}}
 	
 	echo "成功: 标签 '{{tag_name}}' 已更新为当前 main 分支的最新状态并推送到远程。"
+
+# 创建或更新 GitHub Release 并上传打包文件
+# 用法: just release v2.0.0 [可选: "Release notes"]
+# 如果 Release 已存在，会先删除旧的 assets 然后上传新的
+release TAG NOTES='':
+	#!/usr/bin/env bash
+	set -e
+	echo "🔨 开始构建发布版本..."
+	RELEASE=true pnpm build
+	echo "📦 打包扩展..."
+	cd dist && zip -r ../element_blocker.zip . && cd ..
+	
+	# 检查 Release 是否存在
+	if gh release view {{TAG}} &>/dev/null; then
+		echo "🔄 Release {{TAG}} 已存在，更新中..."
+		# Release 存在，删除旧的 assets 并上传新的
+		gh release upload {{TAG}} element_blocker.zip --clobber
+		echo "✅ Release {{TAG}} 更新成功！"
+	else
+		echo "🚀 创建新的 GitHub Release..."
+		# 如果没有提供 NOTES，使用默认值
+		if [ -z "{{NOTES}}" ]; then
+			gh release create {{TAG}} element_blocker.zip --title "{{TAG}}"
+		else
+			gh release create {{TAG}} element_blocker.zip --title "{{TAG}}" --notes "{{NOTES}}"
+		fi
+		echo "✅ Release {{TAG}} 创建成功！"
+	fi
+	
+	rm -f element_blocker.zip
+	rm -rf dist
+	echo "🧹 清理临时文件完成"
+
