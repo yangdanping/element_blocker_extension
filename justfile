@@ -30,45 +30,6 @@ preview:
 update-prettier:
     pnpm update:prettier
 
-# 创建或更新 GitHub Release 并上传打包文件
-# 用法: just release v2.0.0 [可选: "Release notes"]
-# 如果 Release 已存在，会先删除旧的 assets 然后上传新的
-release TAG NOTES='':
-    #!/usr/bin/env bash
-    set -e
-    echo "🔨 开始构建发布版本..."
-    RELEASE=true pnpm build
-    echo "📦 打包扩展..."
-    cd dist && zip -r ../element_blocker.zip . && cd ..
-    
-    # 检查 Release 是否存在
-    if gh release view {{TAG}} &>/dev/null; then
-        echo "🔄 Release {{TAG}} 已存在，更新中..."
-        # Release 存在，删除旧的 assets 并上传新的
-        gh release upload {{TAG}} element_blocker.zip --clobber
-        echo "✅ Release {{TAG}} 更新成功！"
-    else
-        echo "🚀 创建新的 GitHub Release..."
-        # 如果没有提供 NOTES，使用默认值
-        if [ -z "{{NOTES}}" ]; then
-            gh release create {{TAG}} element_blocker.zip --title "{{TAG}}"
-        else
-            gh release create {{TAG}} element_blocker.zip --title "{{TAG}}" --notes "{{NOTES}}"
-        fi
-        echo "✅ Release {{TAG}} 创建成功！"
-    fi
-    
-    rm -f element_blocker.zip
-    rm -rf dist
-    echo "🧹 清理临时文件完成"
-
-# 将 dev 分支合并到 main 并推送
-merge-dev-to-main:
-    git switch main
-    git merge origin/dev
-    git push
-    git switch dev
-
 # 替换现有标签 (仅限 main 分支)
 # 使用方式: just retag v2.0.0
 retag tag_name:
@@ -77,7 +38,7 @@ retag tag_name:
     # 1. 检查分支
     current_branch=$(git branch --show-current)
     if [ "$current_branch" != "main" ]; then
-        echo -e "\033[31m错误: 当前不在 main 分支。请先切换到 main 分支 (git checkout main)。\033[0m"
+        echo "错误: 当前不在 main 分支。请先切换到 main 分支 (git checkout main)。"
         exit 1
     fi
 
@@ -88,7 +49,7 @@ retag tag_name:
     tag_exists_remote=$(git ls-remote --tags origin refs/tags/{{tag_name}} 2>/dev/null)
 
     if [ -z "$tag_exists_local" ] && [ -z "$tag_exists_remote" ]; then
-        echo -e "\033[33m提示: 标签 '{{tag_name}}' 在本地和远程均不存在。\033[0m"
+        echo "提示: 标签 '{{tag_name}}' 在本地和远程均不存在。"
         echo "如需新增并推送该标签，请手动执行以下命令："
         echo "  git tag {{tag_name}}"
         echo "  git push origin {{tag_name}}"
@@ -114,4 +75,4 @@ retag tag_name:
     git tag {{tag_name}}
     git push origin {{tag_name}}
     
-    echo -e "\033[32m成功: 标签 '{{tag_name}}' 已更新为当前 main 分支的最新状态并推送到远程。\033[0m"
+    echo -e "成功: 标签 '{{tag_name}}' 已更新为当前 main 分支的最新状态并推送到远程。"
