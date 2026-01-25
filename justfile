@@ -61,3 +61,57 @@ release TAG NOTES='':
     rm -f element_blocker.zip
     rm -rf dist
     echo "🧹 清理临时文件完成"
+
+# 将 dev 分支合并到 main 并推送
+merge-dev-to-main:
+    git switch main
+    git merge origin/dev
+    git push
+    git switch dev
+
+# 替换现有标签 (仅限 main 分支)
+# 使用方式: just retag v2.0.0
+retag tag_name:
+    @#!/usr/bin/env bash
+    set -e
+    # 1. 检查分支
+    current_branch=$(git branch --show-current)
+    if [ "$current_branch" != "main" ]; then
+        echo -e "\033[31m错误: 当前不在 main 分支。请先切换到 main 分支 (git checkout main)。\033[0m"
+        exit 1
+    fi
+
+    # 2. 检查 Tag 是否存在
+    # 检查本地
+    tag_exists_local=$(git tag -l "{{tag_name}}")
+    # 检查远程
+    tag_exists_remote=$(git ls-remote --tags origin refs/tags/{{tag_name}} 2>/dev/null)
+
+    if [ -z "$tag_exists_local" ] && [ -z "$tag_exists_remote" ]; then
+        echo -e "\033[33m提示: 标签 '{{tag_name}}' 在本地和远程均不存在。\033[0m"
+        echo "如需新增并推送该标签，请手动执行以下命令："
+        echo "  git tag {{tag_name}}"
+        echo "  git push origin {{tag_name}}"
+        exit 1
+    fi
+
+    # 3. 替换逻辑
+    echo "检测到标签 '{{tag_name}}'，正在执行替换操作..."
+    
+    # 删除本地 (如果存在)
+    if [ -n "$tag_exists_local" ]; then
+        git tag -d "{{tag_name}}" > /dev/null
+        echo "已删除本地旧标签"
+    fi
+    
+    # 删除远程 (如果存在)
+    if [ -n "$tag_exists_remote" ]; then
+        git push origin :refs/tags/{{tag_name}} > /dev/null 2>&1
+        echo "已删除远程旧标签"
+    fi
+
+    # 基于当前 main 创建新 tag 并推送
+    git tag {{tag_name}}
+    git push origin {{tag_name}}
+    
+    echo -e "\033[32m成功: 标签 '{{tag_name}}' 已更新为当前 main 分支的最新状态并推送到远程。\033[0m"

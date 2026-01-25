@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Slot } from '@radix-ui/react-slot';
+import { Button as BaseButton } from '@base-ui/react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
@@ -37,17 +37,20 @@ const buttonVariants = cva(
   },
 );
 
-export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
-  asChild?: boolean;
-}
+export interface ButtonProps extends React.ComponentPropsWithoutRef<typeof BaseButton>, VariantProps<typeof buttonVariants> {}
 
 /**
  * Button 组件
- * 支持多种变体和尺寸，可通过 asChild 渲染为其他元素
+ * 基于 Base UI Button 封装
  */
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({ className, variant, size, asChild = false, ...props }, ref) => {
-  const Comp = asChild ? Slot : 'button';
-  return <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />;
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({ className, variant, size, ...props }, ref) => {
+  return (
+    <BaseButton
+      ref={ref}
+      className={cn(buttonVariants({ variant, size, className }))}
+      {...props}
+    />
+  );
 });
 Button.displayName = 'Button';
 
