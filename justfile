@@ -71,7 +71,7 @@ merge-dev-to-main:
 
 # 替换现有标签 (仅限 main 分支)
 # 使用方式: just retag v2.0.0
-@retag tag_name:
+retag tag_name:
 	#!/usr/bin/env bash
 	set -e
 	# 1. 检查分支
