@@ -54,6 +54,24 @@ export default function App() {
     });
   }, [setCurrentDomain]);
 
+  // 监听 Chrome Storage 变化，实时同步状态（快捷键触发的变化）
+  useEffect(() => {
+    const handleStorageChange = (changes: Record<string, chrome.storage.StorageChange>, namespace: string) => {
+      if (namespace === 'local' && (changes.blockedClasses || changes.isEnabled || changes.theme)) {
+        // 重新加载存储数据，更新 store 中的状态
+        loadFromStorage();
+      }
+    };
+
+    // 添加监听器
+    chrome.storage.onChanged.addListener(handleStorageChange);
+
+    // 清理：移除监听器
+    return () => {
+      chrome.storage.onChanged.removeListener(handleStorageChange);
+    };
+  }, [loadFromStorage]);
+
   // 监听状态变化，自动保存
   const blockedClasses = useBlockerStore((state) => state.blockedClasses);
   useEffect(() => {
@@ -182,8 +200,8 @@ export default function App() {
             message.type === 'success'
               ? 'bg-success text-success-foreground'
               : message.type === 'error'
-              ? 'bg-destructive text-destructive-foreground'
-              : 'bg-muted text-muted-foreground'
+                ? 'bg-destructive text-destructive-foreground'
+                : 'bg-muted text-muted-foreground'
           }`}
         >
           {message.text}
