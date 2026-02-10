@@ -6,6 +6,8 @@ import { Button, Switch, Badge, Card, CardHeader, CardTitle } from '@/components
 import { BlockedClassList } from './components/BlockedClassList';
 import { AddClassForm } from './components/AddClassForm';
 
+import { getDomainFromUrl, getDomainDisplayName } from '@/lib/utils';
+
 /**
  * Popup 主应用组件
  */
@@ -48,8 +50,7 @@ export default function App() {
   useEffect(() => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       if (tabs[0]?.url) {
-        const url = new URL(tabs[0].url);
-        setCurrentDomain(url.hostname);
+        setCurrentDomain(getDomainFromUrl(tabs[0].url));
       }
     });
   }, [setCurrentDomain]);
@@ -170,7 +171,7 @@ export default function App() {
           {currentDomain !== chrome.runtime.id && (
             <div className="flex items-center justify-between mt-2">
               <Badge variant="outline" className="text-xs font-mono" style={{ borderColor: '#81C995' }}>
-                {currentDomain || '未知域名'}
+                {getDomainDisplayName(currentDomain)}
               </Badge>
               <div className="flex items-center gap-2">
                 <span className="text-xs text-muted-foreground">{getCurrentDomainStatus()}</span>

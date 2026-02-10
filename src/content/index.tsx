@@ -10,7 +10,7 @@
  * 4. 与 popup/background 通信
  */
 
-import { generateSelector, getDomainFromUrl } from '@/lib/utils';
+import { generateSelector, getDomainFromUrl, getDomainDisplayName } from '@/lib/utils';
 import type { BlockedClass, Message } from '@/lib/types';
 import './styles.css';
 
@@ -540,7 +540,7 @@ async function addBlockedClass(className: string, label?: string) {
       // 通知 background 更新图标
       notifyBackgroundUpdateIcon();
 
-      showTempMessage(`已在 ${currentDomain} 下屏蔽类名: .${className}`, 'success');
+      showTempMessage(`已在 ${getDomainDisplayName(currentDomain)} 下屏蔽类名: .${className}`, 'success');
     } else {
       showTempMessage(`该类名已被屏蔽`, 'warning');
     }
@@ -617,7 +617,7 @@ async function toggleDomainBlocking(domain: string) {
     const domainClasses = classes.filter((item) => item.domain === currentDomain || item.domain === null);
 
     if (domainClasses.length === 0) {
-      showTempMessage(`${currentDomain} 下没有可切换的屏蔽项`, 'info');
+      showTempMessage(`${getDomainDisplayName(currentDomain)} 下没有可切换的屏蔽项`, 'info');
       return;
     }
 
@@ -636,7 +636,7 @@ async function toggleDomainBlocking(domain: string) {
     notifyBackgroundUpdateIcon();
 
     const statusText = newState ? '已启用' : '已禁用';
-    showTempMessage(`${currentDomain} 下的所有屏蔽项${statusText}`, newState ? 'success' : 'info');
+    showTempMessage(`${getDomainDisplayName(currentDomain)} 下的所有屏蔽项${statusText}`, newState ? 'success' : 'info');
   } catch {
     showTempMessage('切换失败', 'error');
   }

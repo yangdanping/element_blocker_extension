@@ -20,10 +20,24 @@ export function cn(...inputs: ClassValue[]) {
  */
 export function getDomainFromUrl(url: string): string {
   try {
-    return new URL(url).hostname;
+    const parsedUrl = new URL(url);
+    if (parsedUrl.protocol === 'file:') {
+      return 'local-file';
+    }
+    return parsedUrl.hostname || 'unknown';
   } catch {
     return 'unknown';
   }
+}
+
+/**
+ * 获取域名的显示名称
+ */
+export function getDomainDisplayName(domain: string | null): string {
+  if (!domain) return '未知域名';
+  if (domain === 'global') return '全局规则';
+  if (domain === 'local-file') return '本地文件';
+  return domain;
 }
 
 /**

@@ -19,7 +19,7 @@ import {
 } from '@/components/ui';
 import type { GroupedClasses, BlockedClass } from '@/lib/types';
 import type { BlockedClassListProps } from './types';
-import { formatDisplaySelector, parseSelectorString } from '@/lib/utils';
+import { formatDisplaySelector, parseSelectorString, getDomainDisplayName } from '@/lib/utils';
 
 /**
  * 屏蔽类名列表组件
@@ -179,8 +179,9 @@ export function BlockedClassList({ groupedClasses, currentDomain, onMessage }: B
    * 渲染单个域名分组
    */
   const renderDomainGroup = (domain: string, items: BlockedClass[], isActive: boolean) => {
-    const displayName = domain === 'global' ? '全局规则' : domain;
+    const displayName = getDomainDisplayName(domain);
     const isGlobal = domain === 'global';
+    const isLocalFile = domain === 'local-file';
 
     return (
       <Card key={domain} className={`mb-3 ${isActive ? '' : 'opacity-60'}`}>
@@ -192,6 +193,11 @@ export function BlockedClassList({ groupedClasses, currentDomain, onMessage }: B
                   <Globe className="h-3.5 w-3.5 text-muted-foreground" />
                   <span className="font-mono text-xs">{displayName}</span>
                 </>
+              ) : isLocalFile ? (
+                <div className="flex items-center gap-2">
+                  <Monitor className="h-3.5 w-3.5 text-muted-foreground" />
+                  <span className="font-mono text-xs">{displayName}</span>
+                </div>
               ) : (
                 <div className="flex items-center gap-2">
                   <Monitor className="h-3.5 w-3.5 text-muted-foreground" />
