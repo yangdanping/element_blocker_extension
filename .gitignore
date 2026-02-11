@@ -22,6 +22,7 @@ stats.html
 
 # Editor directories and files
 .vscode/*
+.cursor/*
 !.vscode/extensions.json
 .idea
 *.suo
@@ -32,3 +33,11 @@ stats.html
 
 # Documentation
 *文档*/
+
+# 本地 macOS 10.15 兼容性补丁
+.pnpmfile.cjs
+
+# Environment variables
+.env.development
+.env.production
+.env.*.local
