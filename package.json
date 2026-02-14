@@ -10,10 +10,10 @@
     "update:prettier": "git fetch https://github.com/yangdanping/prettier_config_repo.git main && git checkout FETCH_HEAD -- .prettierrc .prettierignore"
   },
   "dependencies": {
-    "@base-ui/react": "^1.1.0",
+    "@base-ui/react": "^1.2.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "lucide-react": "^0.563.0",
+    "lucide-react": "^0.564.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "tailwind-merge": "^3.4.0",

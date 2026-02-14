@@ -10,6 +10,8 @@
  * 4. 作为消息路由中心
  */
 
+import { getDomainFromUrl } from '../lib/utils';
+
 // =========================================
 // 快捷键监听
 // =========================================
@@ -29,13 +31,12 @@ async function handleToggleDomainBlocking() {
     if (!tab?.url || !tab.id) return;
 
     // 跳过不支持 content script 的页面
-    if (!tab.url.startsWith('http://') && !tab.url.startsWith('https://')) {
-      console.log('Cannot toggle blocking on non-http pages');
+    if (!tab.url.startsWith('http://') && !tab.url.startsWith('https://') && !tab.url.startsWith('file://')) {
+      console.log('Cannot toggle blocking on non-supported pages');
       return;
     }
 
-    const url = new URL(tab.url);
-    const domain = url.hostname;
+    const domain = getDomainFromUrl(tab.url);
 
     // 发送消息给 content script，静默处理错误
     try {
@@ -110,12 +111,11 @@ async function updateIconForTab(tabId: number) {
     if (!tab?.url) return;
 
     // 跳过 chrome:// 等特殊页面
-    if (!tab.url.startsWith('http://') && !tab.url.startsWith('https://')) {
+    if (!tab.url.startsWith('http://') && !tab.url.startsWith('https://') && !tab.url.startsWith('file://')) {
       return;
     }
 
-    const url = new URL(tab.url);
-    const domain = url.hostname;
+    const domain = getDomainFromUrl(tab.url);
 
     const hasActiveBlocking = await checkDomainHasActiveBlocking(domain);
 
